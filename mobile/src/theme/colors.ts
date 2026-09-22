@@ -1,0 +1,28 @@
+export const colors = {
+  bg: '#0A0E17',
+  card: '#111726',
+  cardBorder: '#1E293B',
+  inputBg: '#161F30',
+  inputBorder: '#2A374F',
+  textPrimary: '#F8FAFC',
+  textSecondary: '#94A3B8',
+  textMuted: '#64748B',
+  primary: '#22C55E', // Trybel Green CTA
+  primaryHover: '#16A34A',
+  accentBlue: '#38BDF8',
+  accentIndigo: '#6366F1',
+  tagBg: '#1E293B',
+  tagText: '#E2E8F0',
+  badgeGreen: '#064E3B',
+  badgeGreenText: '#34D399',
+  badgeBlue: '#0C4A6E',
+  badgeBlueText: '#38BDF8',
+  badgeOrange: '#7C2D12',
+  badgeOrangeText: '#FB923C',
+  danger: '#EF4444',
+  dangerBg: '#450A0A',
+  dangerText: '#FCA5A5',
+  border: '#1E293B',
+  white: '#FFFFFF',
+  black: '#000000'
+};
