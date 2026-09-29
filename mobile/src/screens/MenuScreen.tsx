@@ -44,7 +44,7 @@ export const MenuScreen: React.FC<MenuScreenProps> = ({ onBack, onNavigate, onLo
             style={styles.avatar}
           />
           <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>Sritan Vesangi</Text>
+            <Text style={styles.profileName}>Varun Dulam</Text>
             <Text style={styles.profileSub}>CSE • 3rd Year</Text>
           </View>
           <Text style={styles.chevron}>›</Text>

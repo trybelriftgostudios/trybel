@@ -5,6 +5,7 @@ export interface College {
   id: string;
   name: string;
   domain: string;
+  domains?: string[];
   logo_url?: string;
   is_active: boolean;
   created_at: string;

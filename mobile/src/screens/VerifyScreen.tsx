@@ -8,7 +8,7 @@ interface VerifyScreenProps {
 }
 
 export const VerifyScreen: React.FC<VerifyScreenProps> = ({ onVerified }) => {
-  const [email, setEmail] = useState('sritan@stpeters.edu'); // Pre-fill default pilot email for convenience
+  const [email, setEmail] = useState('varun@pappu'); // Pre-fill default pilot email for convenience
   const [loading, setLoading] = useState(false);
   const [linkSent, setLinkSent] = useState(false);
   const [otp, setOtp] = useState('123456');
@@ -46,7 +46,7 @@ export const VerifyScreen: React.FC<VerifyScreenProps> = ({ onVerified }) => {
     setError(null);
     setLoading(true);
     try {
-      await api.oauthLogin(provider, email.trim(), 'Sritan Vesangi');
+      await api.oauthLogin(provider, email.trim(), 'Varun Dulam');
       onVerified();
     } catch (err: any) {
       setError(err.message || 'OAuth college domain mismatch');

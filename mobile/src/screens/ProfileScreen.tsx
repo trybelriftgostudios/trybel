@@ -77,7 +77,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onBack, onNavigate
           </View>
 
           <View style={styles.nameRow}>
-            <Text style={styles.fullName}>{profileData?.profile?.full_name || 'Sritan Vesangi'}</Text>
+            <Text style={styles.fullName}>{profileData?.profile?.full_name || 'Varun Dulam'}</Text>
           </View>
 
           <Text style={styles.deptText}>

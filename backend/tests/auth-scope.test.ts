@@ -13,8 +13,8 @@ describe('Trybel Multi-Tenant College-Scoping & Security Test Suite', () => {
     seedDatabase();
     app = await buildApp();
 
-    // Generate JWT for St. Peter's Student (Sritan)
-    const sritan = db.users.find(u => u.email === 'sritan@stpeters.edu')!;
+    // Generate JWT for St. Peter's Student (Varun / Sritan)
+    const sritan = db.users.find(u => u.email === 'varun@pappu') || db.users.find(u => u.email === 'sritan@stpeters.edu')!;
     stPetersToken = app.jwt.sign({
       userId: sritan.id,
       collegeId: sritan.college_id,
@@ -77,6 +77,27 @@ describe('Trybel Multi-Tenant College-Scoping & Security Test Suite', () => {
       const json = JSON.parse(res.body);
       expect(json.token).toBeDefined();
       expect(json.college.id).toBe('col_stpeters_01');
+    });
+
+    it('AUTH-01b: Accepts pre-entered credentials varun@pappu and issues JWT', async () => {
+      const verifyRes = await app.inject({
+        method: 'POST',
+        url: '/api/auth/send-verification',
+        payload: { email: 'varun@pappu' }
+      });
+      expect(verifyRes.statusCode).toBe(200);
+      const verifyJson = JSON.parse(verifyRes.body);
+      expect(verifyJson.college.id).toBe('col_stpeters_01');
+
+      const loginRes = await app.inject({
+        method: 'POST',
+        url: '/api/auth/verify',
+        payload: { email: 'varun@pappu', otp: '123456' }
+      });
+      expect(loginRes.statusCode).toBe(200);
+      const loginJson = JSON.parse(loginRes.body);
+      expect(loginJson.user.email).toBe('varun@pappu');
+      expect(loginJson.college.id).toBe('col_stpeters_01');
     });
   });
 

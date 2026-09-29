@@ -8,6 +8,7 @@ export function seedDatabase() {
     id: 'col_stpeters_01',
     name: "St. Peter's Engineering College",
     domain: 'stpeters.edu',
+    domains: ['stpeters.edu', 'pappu', 'pappu.edu'],
     logo_url: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=200',
     is_active: true,
     created_at: new Date().toISOString()
@@ -17,6 +18,7 @@ export function seedDatabase() {
     id: 'col_apex_02',
     name: 'Apex Institute of Technology',
     domain: 'apex.edu',
+    domains: ['apex.edu'],
     logo_url: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=200',
     is_active: true,
     created_at: new Date().toISOString()
@@ -25,8 +27,20 @@ export function seedDatabase() {
   db.colleges.push(stPeters, apexInst);
 
   // 2. Users (St. Peter's)
-  const sritan = {
+  const varun = {
     id: 'usr_sritan_01',
+    college_id: stPeters.id,
+    email: 'varun@pappu',
+    role: 'student' as const,
+    is_verified: true,
+    status: 'active' as const,
+    created_at: new Date().toISOString()
+  };
+
+  const sritan = varun;
+
+  const legacySritan = {
+    id: 'usr_sritan_legacy',
     college_id: stPeters.id,
     email: 'sritan@stpeters.edu',
     role: 'student' as const,
@@ -136,7 +150,7 @@ export function seedDatabase() {
     created_at: new Date().toISOString()
   };
 
-  db.users.push(sritan, arjun, priya, sana, venkatesh, rahul, pranav, clubPres, moderator, rohan, ishita);
+  db.users.push(sritan, legacySritan, arjun, priya, sana, venkatesh, rahul, pranav, clubPres, moderator, rohan, ishita);
 
   // 3. Profiles
   db.profiles.push(
@@ -144,7 +158,7 @@ export function seedDatabase() {
       id: 'prof_sritan',
       user_id: sritan.id,
       college_id: stPeters.id,
-      full_name: 'Sritan Vesangi',
+      full_name: 'Varun Dulam',
       avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300',
       department: 'CSE',
       year_of_study: '3rd Year',
@@ -153,6 +167,22 @@ export function seedDatabase() {
       skills: ['Python', 'Web Development', 'Machine Learning', 'UI/UX', 'Leadership'],
       interests: ['AI', 'Web Dev', 'Startups', 'Tech Events'],
       available_for: ['Study Partners', 'Hackathon Teams', 'Projects'],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    },
+    {
+      id: 'prof_sritan_legacy',
+      user_id: legacySritan.id,
+      college_id: stPeters.id,
+      full_name: 'Sritan Vesangi',
+      avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300',
+      department: 'CSE',
+      year_of_study: '3rd Year',
+      about: 'Passionate about building products.',
+      motto: 'Learn • Build • Connect',
+      skills: ['Python', 'Web Development'],
+      interests: ['AI', 'Web Dev'],
+      available_for: ['Study Partners'],
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     },

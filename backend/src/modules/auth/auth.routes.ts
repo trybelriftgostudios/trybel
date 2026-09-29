@@ -4,6 +4,13 @@ import { db } from '../../db/db.js';
 import { authenticateToken } from '../../middleware/auth.middleware.js';
 import { ModerationService } from '../moderation/moderation.service.js';
 
+function findCollegeByDomain(domain: string) {
+  const d = domain.toLowerCase();
+  return db.colleges.find(c =>
+    (c.domain.toLowerCase() === d || (c.domains && c.domains.map(x => x.toLowerCase()).includes(d))) && c.is_active
+  );
+}
+
 export async function authRoutes(fastify: FastifyInstance) {
   // 1. Send verification link / OTP
   fastify.post('/send-verification', async (request: FastifyRequest<{ Body: { email: string } }>, reply: FastifyReply) => {
@@ -13,7 +20,7 @@ export async function authRoutes(fastify: FastifyInstance) {
     }
 
     const domain = email.split('@')[1].toLowerCase();
-    const college = db.colleges.find(c => c.domain.toLowerCase() === domain && c.is_active);
+    const college = findCollegeByDomain(domain);
 
     if (!college) {
       // AUTH-03: Route unrecognized domain to waitlist
@@ -66,7 +73,7 @@ export async function authRoutes(fastify: FastifyInstance) {
 
     if (!matchedToken && email) {
       const domain = email.split('@')[1]?.toLowerCase();
-      const college = db.colleges.find(c => c.domain.toLowerCase() === domain && c.is_active);
+      const college = findCollegeByDomain(domain);
       if (college && otp === '123456') {
         collegeId = college.id;
       }
@@ -143,7 +150,7 @@ export async function authRoutes(fastify: FastifyInstance) {
     }
 
     const domain = email.split('@')[1].toLowerCase();
-    const college = db.colleges.find(c => c.domain.toLowerCase() === domain && c.is_active);
+    const college = findCollegeByDomain(domain);
 
     if (!college) {
       return reply.status(403).send({

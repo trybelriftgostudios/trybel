@@ -33,7 +33,7 @@ export default function App() {
   // Auto-login test pilot user in dev mode
   useEffect(() => {
     // Attempt background session verify
-    api.verifyToken({ email: 'sritan@stpeters.edu', otp: '123456' })
+    api.verifyToken({ email: 'varun@pappu', otp: '123456' })
       .then(() => {
         setIsAuthenticated(true);
       })
