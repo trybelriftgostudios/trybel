@@ -82,7 +82,7 @@ export const VerifyScreen: React.FC<VerifyScreenProps> = ({ onVerified }) => {
             <Text style={styles.inputIcon}>✉</Text>
             <TextInput
               style={styles.input}
-              placeholder="you@college.edu"
+              placeholder="varun@pappu"
               placeholderTextColor={colors.textMuted}
               value={email}
               onChangeText={setEmail}
