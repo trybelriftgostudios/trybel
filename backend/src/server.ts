@@ -17,6 +17,8 @@ import { chatbotRoutes } from './modules/chatbot/chatbot.routes.js';
 import { challengeRoutes } from './modules/challenges/challenges.routes.js';
 import { notificationRoutes } from './modules/notifications/notifications.routes.js';
 import { adminRoutes } from './modules/admin/admin.routes.js';
+import { mediaCatalogRoutes } from './modules/media-catalog/media-catalog.routes.js';
+import { PostgresService } from './db/postgres-pool.js';
 
 export async function buildApp() {
   const fastify = Fastify({
@@ -36,7 +38,11 @@ export async function buildApp() {
   });
 
   // Health check & Colleges directory
-  fastify.get('/health', async () => ({ status: 'healthy', timestamp: new Date().toISOString() }));
+  fastify.get('/health', async () => ({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    database: PostgresService.isDatabaseConnected() ? 'postgresql_active' : 'local_snapshot_cache_active'
+  }));
   fastify.get('/api/colleges', async () => ({ colleges: db.colleges.filter(c => c.is_active) }));
 
   // Register feature modules
@@ -51,11 +57,19 @@ export async function buildApp() {
   await fastify.register(challengeRoutes, { prefix: '/api/challenges' });
   await fastify.register(notificationRoutes, { prefix: '/api/notifications' });
   await fastify.register(adminRoutes, { prefix: '/api/admin' });
+  await fastify.register(mediaCatalogRoutes, { prefix: '/api' });
 
   return fastify;
 }
 
 async function start() {
+  // Check PostgreSQL connection
+  const pgHealthy = await PostgresService.checkConnection();
+  if (pgHealthy) {
+    console.log(' PostgreSQL Connection Pool active and healthy.');
+  } else {
+    console.log(' PostgreSQL is cold/migrating — local JSON snapshot cache (local-products-fallback.json, local-homepage-fallback.json) active for zero downtime.');
+  }
   // Ensure database has seed data
   if (db.colleges.length === 0) {
     seedDatabase();

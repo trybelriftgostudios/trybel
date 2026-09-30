@@ -1,12 +1,13 @@
 import crypto from 'crypto';
 import { db } from '../db/db.js';
+import { CloudinaryMediaService, ImageProcessingOptions, CloudinaryUploadOptions } from './cloudinary-media.service.js';
 
 export class MediaStorageService {
   private static SECRET_SIGNING_KEY = process.env.MEDIA_SECRET || 'trybel-secure-s3-mock-signing-key-2026';
   private static URL_EXPIRY_SECONDS = 900; // 15 minutes
 
   /**
-   * Generates a signed, expiring URL for an s3_key.
+   * Generates a signed, expiring URL for an s3_key or Cloudinary asset.
    * Format: https://cdn.trybel.internal/{s3Key}?exp={timestamp}&sig={signature}
    */
   public static generateSignedUrl(s3Key: string): string {
@@ -17,8 +18,27 @@ export class MediaStorageService {
       .update(payload)
       .digest('hex');
     
-    // In dev / mock, we can return the media path with the signed exp/sig parameters
+    // In dev / mock, we return the media path with the signed exp/sig parameters
     return `https://media.trybel.internal/${s3Key}?exp=${expiresAt}&sig=${signature}`;
+  }
+
+  /**
+   * Processes photography or reels on-the-fly with Jimp and uploads to Cloudinary.
+   */
+  public static async processAndUpload(
+    input: Buffer | string,
+    processingOptions?: ImageProcessingOptions,
+    uploadOptions?: CloudinaryUploadOptions
+  ) {
+    const processedBuffer = await CloudinaryMediaService.processImage(input, processingOptions);
+    return CloudinaryMediaService.uploadMedia(processedBuffer, uploadOptions);
+  }
+
+  /**
+   * Generates responsive, transformed Cloudinary URL.
+   */
+  public static getOptimizedUrl(publicId: string, transformations?: any) {
+    return CloudinaryMediaService.getOptimizedUrl(publicId, transformations);
   }
 
   /**
