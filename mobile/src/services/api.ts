@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+import { getMockResponse } from './mockFallback';
 
 const LAN_IP = '192.168.78.176';
 export const API_BASE_URL = Platform.OS === 'web'
@@ -29,17 +30,33 @@ class ApiService {
       headers['Authorization'] = `Bearer ${this.token}`;
     }
 
-    const res = await fetch(`${API_BASE_URL}${endpoint}`, {
-      ...options,
-      headers
-    });
+    try {
+      const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+        ...options,
+        headers
+      });
 
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      throw new Error(data.message || data.error || `HTTP error ${res.status}`);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.message || data.error || `HTTP error ${res.status}`);
+      }
+
+      return data as T;
+    } catch (err: any) {
+      if (
+        err.name === 'TypeError' ||
+        err.message?.includes('Failed to fetch') ||
+        err.message?.includes('Network request failed') ||
+        err.message?.includes('NetworkError')
+      ) {
+        console.warn(`[Trybel API] Network unreachable (${API_BASE_URL}), serving fallback demo response for ${endpoint}`);
+        const fallback = getMockResponse(endpoint, options);
+        if (fallback !== undefined) {
+          return fallback as T;
+        }
+      }
+      throw err;
     }
-
-    return data as T;
   }
 
   // Auth
