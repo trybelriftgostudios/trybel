@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "dev": "npm --prefix backend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:mobile": "npm --prefix mobile start",
+    "dev:web": "npm --prefix mobile run web",
     "build": "cd mobile && npm install && npx expo export --platform web"
   }
 }
