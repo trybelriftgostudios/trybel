@@ -37,6 +37,49 @@ export async function buildApp() {
     secret: process.env.JWT_SECRET || 'trybel-super-secure-jwt-college-secret-key-2026'
   });
 
+  // Root Welcome & Status Dashboard
+  fastify.get('/', async (_req, reply) => {
+    return reply.type('text/html').send(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Trybel API Gateway</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0A0E17; color: #FFFFFF; padding: 40px 20px; margin: 0; }
+            .card { background: #131B2E; border: 1px solid #1E293B; border-radius: 12px; padding: 28px; max-width: 650px; margin: 0 auto; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+            h1 { color: #6366F1; margin-top: 0; font-size: 26px; }
+            .badge { display: inline-block; background: #10B981; color: #042f1a; font-weight: bold; padding: 4px 10px; border-radius: 6px; font-size: 13px; margin-bottom: 20px; }
+            p { color: #94A3B8; line-height: 1.6; }
+            ul { list-style: none; padding: 0; }
+            li { padding: 10px 14px; background: #1E293B; margin-bottom: 8px; border-radius: 8px; font-family: monospace; font-size: 14px; display: flex; justify-content: space-between; }
+            a { color: #38BDF8; text-decoration: none; }
+            a:hover { text-decoration: underline; }
+            .btn { display: inline-block; background: #6366F1; color: white; padding: 12px 22px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 15px; }
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <span class="badge">● Trybel Backend Online</span>
+            <h1>Trybel Campus API Gateway</h1>
+            <p>Welcome to Trybel's Fastify backend service with PostgreSQL pooling, Cloudinary v2 asset storage, Jimp on-the-fly image processing, and multi-tenant college scoping.</p>
+            
+            <p><strong>Available API Endpoints:</strong></p>
+            <ul>
+              <li><span>Health & DB Status:</span> <a href="/health">GET /health</a></li>
+              <li><span>Verified Colleges:</span> <a href="/api/colleges">GET /api/colleges</a></li>
+              <li><span>Campus Catalog:</span> <a href="/api/catalog/products">GET /api/catalog/products</a></li>
+              <li><span>Homepage Feed & Reels:</span> <a href="/api/feed/homepage">GET /api/feed/homepage</a></li>
+            </ul>
+
+            <p>To view the full 18-screen interactive mobile app interface:</p>
+            <a class="btn" href="https://trybel.vercel.app" target="_blank">Open Trybel Web App &rarr;</a>
+          </div>
+        </body>
+      </html>
+    `);
+  });
+
   // Health check & Colleges directory
   fastify.get('/health', async () => ({
     status: 'healthy',
