@@ -9,7 +9,9 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "build": "expo export --platform web",
-    "export": "expo export --platform web"
+    "export": "expo export --platform web",
+    "build:apk": "eas build --platform android --profile preview",
+    "update:ota": "eas update --channel preview"
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
@@ -17,6 +19,7 @@
     "@expo/vector-icons": "^14.0.2",
     "expo": "~51.0.28",
     "expo-status-bar": "~1.12.1",
+    "expo-updates": "~0.25.28",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.5",

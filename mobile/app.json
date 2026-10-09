@@ -12,9 +12,11 @@
       "backgroundColor": "#0A0D14"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.trybel.campus"
     },
     "android": {
+      "package": "com.trybel.campus",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0A0D14"
@@ -22,6 +24,21 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0,
+      "checkAutomatically": "ON_LOAD"
+    },
+    "plugins": [
+      [
+        "expo-updates",
+        {
+          "username": "trybelriftgostudios"
+        }
+      ]
+    ]
   }
 }

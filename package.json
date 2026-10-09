@@ -7,6 +7,8 @@
     "dev:backend": "npm --prefix backend run dev",
     "dev:mobile": "npm --prefix mobile start",
     "dev:web": "npm --prefix mobile run web",
-    "build": "cd mobile && npm install && npx expo export --platform web"
+    "build": "cd mobile && npm install && npx expo export --platform web",
+    "build:apk": "npm --prefix mobile run build:apk",
+    "update:ota": "npm --prefix mobile run update:ota"
   }
 }
