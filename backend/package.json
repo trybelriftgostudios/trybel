@@ -9,7 +9,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "check": "node scripts/test-connections.js"
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",
