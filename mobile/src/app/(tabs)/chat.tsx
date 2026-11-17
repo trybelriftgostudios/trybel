@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: 18,
-    paddingBottom: 80,
+    paddingBottom: 110,
     gap: 12
   },
   threadCard: {

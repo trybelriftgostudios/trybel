@@ -153,7 +153,7 @@ export default function ClubsAndEventsModal() {
   const registeredEvents = events.filter(e => e.is_registered === 1);
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>

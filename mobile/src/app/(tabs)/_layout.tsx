@@ -25,12 +25,15 @@ export default function TabsLayout() {
           borderTopWidth: 1,
           height: tabHeight,
           paddingBottom: bottomPadding,
-          paddingTop: 8,
+          paddingTop: 6,
           elevation: 12,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -4 },
           shadowOpacity: 0.3,
           shadowRadius: 8
+        },
+        tabBarItemStyle: {
+          paddingVertical: 2
         },
         tabBarLabelStyle: styles.tabLabel
       }}
@@ -106,8 +109,8 @@ export default function TabsLayout() {
 
 const styles = StyleSheet.create({
   tabLabel: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '700',
-    marginTop: 2
+    marginTop: 1
   }
 });

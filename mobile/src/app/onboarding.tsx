@@ -42,7 +42,7 @@ export default function OnboardingScreen() {
   const slide = ONBOARDING_SLIDES[currentSlide];
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
       <View style={styles.container}>
         <View style={styles.skipRow}>
           <TouchableOpacity onPress={() => router.replace('/(tabs)')}>
