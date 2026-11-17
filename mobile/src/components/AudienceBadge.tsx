@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { colors } from '../theme/colors';
 
 interface AudienceBadgeProps {
   type: 'college_only' | 'open_to_all';

@@ -2,6 +2,7 @@
   "expo": {
     "name": "Trybel",
     "slug": "trybel",
+    "scheme": "trybel",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -38,7 +39,9 @@
         {
           "username": "trybelriftgostudios"
         }
-      ]
+      ],
+      "expo-router",
+      "expo-secure-store"
     ]
   }
 }
