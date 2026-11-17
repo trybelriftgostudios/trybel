@@ -68,7 +68,11 @@ export default function DiscoverScreen() {
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         {/* Category Filter Chips */}
         <ScrollView
           horizontal
@@ -196,14 +200,20 @@ export default function DiscoverScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.bg
+    backgroundColor: colors.bg,
+    overflow: 'hidden'
   },
   header: {
     paddingHorizontal: 18,
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: colors.cardBorder,
-    backgroundColor: colors.bg
+    backgroundColor: colors.bg,
+    zIndex: 10,
+    elevation: 4
+  },
+  scrollView: {
+    flex: 1
   },
   title: {
     fontSize: 22,

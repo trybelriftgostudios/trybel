@@ -97,11 +97,13 @@ export default function HomeScreen() {
       {/* Top Header */}
       <View style={styles.header}>
         <View style={styles.logoRow}>
-          <Image
-            source={require('../../../assets/logo.png')}
-            style={styles.brandLogo}
-            resizeMode="contain"
-          />
+          <View style={styles.brandLogoCircle}>
+            <Image
+              source={require('../../../assets/logo.png')}
+              style={styles.brandLogo}
+              resizeMode="contain"
+            />
+          </View>
           <Text style={styles.brandTitle}>TRYBEL</Text>
           <View style={styles.verifiedCampusTag}>
             <Text style={styles.verifiedDot}>●</Text>
@@ -138,7 +140,11 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         {/* Hardware-Accelerated Pan Carousel Banner */}
         <PanCarousel
           data={highlightReels}
@@ -329,7 +335,8 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.bg
+    backgroundColor: colors.bg,
+    overflow: 'hidden'
   },
   header: {
     flexDirection: 'row',
@@ -339,17 +346,30 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: colors.cardBorder,
-    backgroundColor: colors.bg
+    backgroundColor: colors.bg,
+    zIndex: 10,
+    elevation: 4
   },
   logoRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10
   },
+  brandLogoCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.card,
+    borderWidth: 1.5,
+    borderColor: colors.cardBorder,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden'
+  },
   brandLogo: {
-    width: 32,
-    height: 32,
-    borderRadius: 8
+    width: 34,
+    height: 34,
+    borderRadius: 17
   },
   brandTitle: {
     fontSize: 22,
@@ -390,6 +410,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.cardBorder
+  },
+  scrollView: {
+    flex: 1
   },
   scrollContent: {
     paddingBottom: 110

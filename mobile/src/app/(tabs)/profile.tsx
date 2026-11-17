@@ -89,7 +89,11 @@ export default function ProfileScreen() {
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         {/* Profile Card */}
         <View style={styles.profileCard}>
           <View style={styles.avatarRow}>
@@ -219,7 +223,8 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.bg
+    backgroundColor: colors.bg,
+    overflow: 'hidden'
   },
   header: {
     flexDirection: 'row',
@@ -229,7 +234,12 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: colors.cardBorder,
-    backgroundColor: colors.bg
+    backgroundColor: colors.bg,
+    zIndex: 10,
+    elevation: 4
+  },
+  scrollView: {
+    flex: 1
   },
   title: {
     fontSize: 22,

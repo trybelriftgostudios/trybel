@@ -157,7 +157,11 @@ export default function FriendsScreen() {
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         {/* FRIENDS LIST */}
         {activeTab === 'friends' && (
           <View style={styles.friendsList}>
@@ -258,14 +262,20 @@ export default function FriendsScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.bg
+    backgroundColor: colors.bg,
+    overflow: 'hidden'
   },
   header: {
     paddingHorizontal: 18,
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: colors.cardBorder,
-    backgroundColor: colors.bg
+    backgroundColor: colors.bg,
+    zIndex: 10,
+    elevation: 4
+  },
+  scrollView: {
+    flex: 1
   },
   title: {
     fontSize: 22,

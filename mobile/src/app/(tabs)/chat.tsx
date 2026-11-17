@@ -150,7 +150,11 @@ export default function ChatScreen() {
       </View>
 
       {/* Threads List */}
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.listContent}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContent}
+      >
         {filteredThreads.map((thread) => (
           <TouchableOpacity
             key={thread.id}
@@ -274,14 +278,20 @@ export default function ChatScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.bg
+    backgroundColor: colors.bg,
+    overflow: 'hidden'
   },
   header: {
     paddingHorizontal: 18,
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: colors.cardBorder,
-    backgroundColor: colors.bg
+    backgroundColor: colors.bg,
+    zIndex: 10,
+    elevation: 4
+  },
+  scrollView: {
+    flex: 1
   },
   title: {
     fontSize: 22,

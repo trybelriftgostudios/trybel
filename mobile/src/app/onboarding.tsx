@@ -105,9 +105,10 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   logoEmblem: {
-    width: 38,
-    height: 38,
-    borderRadius: 10
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    overflow: 'hidden'
   },
   skipText: {
     color: colors.textSecondary,
