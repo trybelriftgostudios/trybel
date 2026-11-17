@@ -18,7 +18,7 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar style="light" backgroundColor={colors.bg} />
+      <StatusBar style="light" />
       <FeedbackProvider>
         <SecurityProvider>
           <Stack

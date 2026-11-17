@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
+import { Paths, File } from 'expo-file-system';
 import { sqliteService } from './sqlite.service';
 
 export interface StudentProfileSummary {
@@ -171,10 +171,9 @@ class ExportImportService {
 
     try {
       const fileName = `trybel_backup_${Date.now()}.json`;
-      const fileUri = `${FileSystem.cacheDirectory}${fileName}`;
-      await FileSystem.writeAsStringAsync(fileUri, jsonString, {
-        encoding: FileSystem.EncodingType.UTF8
-      });
+      const file = new File(Paths.cache, fileName);
+      file.write(jsonString);
+      const fileUri = file.uri;
 
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(fileUri, {
@@ -210,9 +209,8 @@ class ExportImportService {
         const res = await fetch(asset.uri);
         jsonString = await res.text();
       } else {
-        jsonString = await FileSystem.readAsStringAsync(asset.uri, {
-          encoding: FileSystem.EncodingType.UTF8
-        });
+        const file = new File(asset.uri);
+        jsonString = await file.text();
       }
 
       return await sqliteService.restoreFullBackup(jsonString);

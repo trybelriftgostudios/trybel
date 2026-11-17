@@ -133,7 +133,11 @@ export const AppLockOverlay: React.FC = () => {
 
 const styles = StyleSheet.create({
   overlay: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     backgroundColor: '#0A0E17',
     zIndex: 999999,
     justifyContent: 'center',

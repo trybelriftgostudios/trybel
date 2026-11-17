@@ -70,7 +70,7 @@ export default function ChatbotModal() {
   const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<any>(null);
 
   const handleSendMessage = (textToSend?: string) => {
     const query = (textToSend || inputText).trim();

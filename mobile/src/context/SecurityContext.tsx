@@ -79,7 +79,7 @@ export const SecurityProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
     const handleAppStateChange = async (nextAppState: AppStateStatus) => {
       if (
-        appState.current.match(/inactive|background/) &&
+        appState.current?.match(/inactive|background/) &&
         nextAppState === 'active'
       ) {
         // App has come to the foreground!

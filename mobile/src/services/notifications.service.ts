@@ -1,12 +1,15 @@
 import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
+import { AndroidImportance } from 'expo-notifications';
 
 // Configure default notification presentation
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
-    shouldSetBadge: true
+    shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true
   })
 });
 
@@ -22,7 +25,7 @@ class NotificationsService {
       try {
         await Notifications.setNotificationChannelAsync('trybel_campus_reminders', {
           name: 'Campus Reminders & Events',
-          importance: Notifications.AndroidImportance.HIGH,
+          importance: AndroidImportance.HIGH,
           vibrationPattern: [0, 250, 250, 250],
           lightColor: '#22C55E',
           sound: 'default'
@@ -30,7 +33,7 @@ class NotificationsService {
 
         await Notifications.setNotificationChannelAsync('trybel_security', {
           name: 'Security & App Lock',
-          importance: Notifications.AndroidImportance.MAX,
+          importance: AndroidImportance.MAX,
           vibrationPattern: [0, 100, 200, 300],
           lightColor: '#38BDF8',
           sound: 'default'
