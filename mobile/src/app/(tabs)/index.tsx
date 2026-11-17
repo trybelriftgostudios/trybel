@@ -94,57 +94,57 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
-      {/* Top Header */}
-      <View style={styles.header}>
-        <View style={styles.logoRow}>
-          <View style={styles.brandLogoCircle}>
-            <Image
-              source={require('../../../assets/logo.png')}
-              style={styles.brandLogo}
-              resizeMode="contain"
-            />
-          </View>
-          <Text style={styles.brandTitle}>TRYBEL</Text>
-          <View style={styles.verifiedCampusTag}>
-            <Text style={styles.verifiedDot}>●</Text>
-            <Text style={styles.verifiedCampusText}>St. Peter's</Text>
-          </View>
-        </View>
-
-        <View style={styles.headerActions}>
-          {hasPin && (
-            <TouchableOpacity
-              style={styles.headerBtn}
-              onPress={lockApp}
-              accessibilityLabel="Lock App"
-            >
-              <Ionicons name="lock-closed-outline" size={18} color={colors.textPrimary} />
-            </TouchableOpacity>
-          )}
-
-          <TouchableOpacity
-            style={styles.headerBtn}
-            onPress={() => router.push('/chatbot')}
-            accessibilityLabel="Campus AI Assistant"
-          >
-            <Ionicons name="sparkles" size={17} color={colors.primary} />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.headerBtn}
-            onPress={() => router.push('/notifications')}
-            accessibilityLabel="Notifications"
-          >
-            <Ionicons name="notifications-outline" size={18} color={colors.textPrimary} />
-          </TouchableOpacity>
-        </View>
-      </View>
-
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
+        {/* Top Header - Scrolls away naturally with feed like Instagram */}
+        <View style={styles.header}>
+          <View style={styles.logoRow}>
+            <View style={styles.brandLogoCircle}>
+              <Image
+                source={require('../../../assets/logo.png')}
+                style={styles.brandLogo}
+                resizeMode="contain"
+              />
+            </View>
+            <Text style={styles.brandTitle}>TRYBEL</Text>
+            <View style={styles.verifiedCampusTag}>
+              <Text style={styles.verifiedDot}>●</Text>
+              <Text style={styles.verifiedCampusText}>St. Peter's</Text>
+            </View>
+          </View>
+
+          <View style={styles.headerActions}>
+            {hasPin && (
+              <TouchableOpacity
+                style={styles.headerBtn}
+                onPress={lockApp}
+                accessibilityLabel="Lock App"
+              >
+                <Ionicons name="lock-closed-outline" size={18} color={colors.textPrimary} />
+              </TouchableOpacity>
+            )}
+
+            <TouchableOpacity
+              style={styles.headerBtn}
+              onPress={() => router.push('/chatbot')}
+              accessibilityLabel="Campus AI Assistant"
+            >
+              <Ionicons name="sparkles" size={17} color={colors.primary} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.headerBtn}
+              onPress={() => router.push('/notifications')}
+              accessibilityLabel="Notifications"
+            >
+              <Ionicons name="notifications-outline" size={18} color={colors.textPrimary} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
         {/* Hardware-Accelerated Pan Carousel Banner */}
         <PanCarousel
           data={highlightReels}
@@ -347,8 +347,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.cardBorder,
     backgroundColor: colors.bg,
-    zIndex: 10,
-    elevation: 4
+    marginBottom: 6
   },
   logoRow: {
     flexDirection: 'row',
