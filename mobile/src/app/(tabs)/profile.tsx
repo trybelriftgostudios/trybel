@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 18,
-    paddingBottom: 40,
+    paddingBottom: 80,
     gap: 16
   },
   profileCard: {

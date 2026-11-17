@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10
   },
   scrollContent: {
-    paddingBottom: 40
+    paddingBottom: 80
   },
   categoriesRow: {
     paddingHorizontal: 18,

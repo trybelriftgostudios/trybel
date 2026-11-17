@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 18,
-    paddingBottom: 40
+    paddingBottom: 80
   },
   friendsList: {
     gap: 12

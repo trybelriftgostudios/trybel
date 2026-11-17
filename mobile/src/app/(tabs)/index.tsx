@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
     fontSize: 17
   },
   scrollContent: {
-    paddingBottom: 40
+    paddingBottom: 80
   },
   bannerCard: {
     backgroundColor: '#131B2E',
