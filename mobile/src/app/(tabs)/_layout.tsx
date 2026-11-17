@@ -20,17 +20,17 @@ export default function TabsLayout() {
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: {
-          backgroundColor: '#0A0E17',
-          borderTopColor: '#1E293B',
+          backgroundColor: colors.bg,
+          borderTopColor: colors.cardBorder,
           borderTopWidth: 1,
           height: tabHeight,
           paddingBottom: bottomPadding,
           paddingTop: 6,
-          elevation: 12,
+          elevation: 16,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -4 },
-          shadowOpacity: 0.3,
-          shadowRadius: 8
+          shadowOpacity: 0.5,
+          shadowRadius: 10
         },
         tabBarItemStyle: {
           paddingVertical: 2

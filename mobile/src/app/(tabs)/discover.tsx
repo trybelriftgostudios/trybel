@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../theme/colors';
 import { useFeedback } from '../../context/FeedbackContext';
 import { SwipeCardDeck } from '../../components/SwipeCardDeck';
@@ -56,7 +57,7 @@ export default function DiscoverScreen() {
       <View style={styles.header}>
         <Text style={styles.title}>Discover Campus</Text>
         <View style={styles.searchBar}>
-          <Text style={styles.searchIcon}>🔍</Text>
+          <Ionicons name="search-outline" size={18} color={colors.textMuted} style={styles.searchIcon} />
           <TextInput
             style={styles.searchInput}
             placeholder="Search peers, skills, hackathon teams..."
@@ -130,14 +131,15 @@ export default function DiscoverScreen() {
                     style={styles.cardBtnSkip}
                     onPress={() => showFeedback(`Passed on ${student.name}`, 'info')}
                   >
-                    <Text style={styles.btnSkipText}>✕</Text>
+                    <Ionicons name="close" size={20} color={colors.textMuted} />
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     style={styles.cardBtnConnect}
                     onPress={() => showFeedback(`Connection request sent to ${student.name}!`, 'success')}
                   >
-                    <Text style={styles.btnConnectText}>Connect +</Text>
+                    <Ionicons name="person-add" size={15} color={colors.white} style={{ marginRight: 6 }} />
+                    <Text style={styles.btnConnectText}>Connect</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -150,37 +152,37 @@ export default function DiscoverScreen() {
           <Text style={styles.sectionTitle}>Explore Hubs</Text>
           <View style={styles.tilesGrid}>
             <TouchableOpacity
-              style={[styles.hubTile, { borderColor: '#22C55E' }]}
+              style={styles.hubTile}
               onPress={() => router.push('/study-partners')}
             >
-              <Text style={styles.hubIcon}>📚</Text>
+              <Ionicons name="book-outline" size={24} color={colors.primary} style={styles.hubIcon} />
               <Text style={styles.hubTitle}>Study Partners</Text>
               <Text style={styles.hubDesc}>Find exam & subject study buddies (College Only)</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.hubTile, { borderColor: '#38BDF8' }]}
+              style={styles.hubTile}
               onPress={() => router.push('/teams')}
             >
-              <Text style={styles.hubIcon}>💻</Text>
+              <Ionicons name="people-outline" size={24} color={colors.primary} style={styles.hubIcon} />
               <Text style={styles.hubTitle}>Hackathon Teams</Text>
               <Text style={styles.hubDesc}>Form or join SIH 2025 squads (Dual Visibility)</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.hubTile, { borderColor: '#818CF8' }]}
+              style={styles.hubTile}
               onPress={() => router.push('/clubs')}
             >
-              <Text style={styles.hubIcon}>🎪</Text>
+              <Ionicons name="flag-outline" size={24} color={colors.primary} style={styles.hubIcon} />
               <Text style={styles.hubTitle}>Clubs & Events</Text>
               <Text style={styles.hubDesc}>Workshops, tech fests, and verified RSVP feedback</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.hubTile, { borderColor: '#F59E0B' }]}
+              style={styles.hubTile}
               onPress={() => router.push('/challenges')}
             >
-              <Text style={styles.hubIcon}>🧩</Text>
+              <Ionicons name="trophy-outline" size={24} color={colors.primary} style={styles.hubIcon} />
               <Text style={styles.hubTitle}>Daily Challenge</Text>
               <Text style={styles.hubDesc}>Daily engineering puzzle with campus ranking</Text>
             </TouchableOpacity>
@@ -200,30 +202,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E293B'
+    borderBottomColor: colors.cardBorder,
+    backgroundColor: colors.bg
   },
   title: {
     fontSize: 22,
-    fontWeight: '800',
-    color: '#F8FAFC',
-    marginBottom: 10
+    fontWeight: '900',
+    color: colors.textPrimary,
+    marginBottom: 10,
+    letterSpacing: -0.3
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     borderRadius: 12,
     paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: '#1E293B'
+    borderColor: colors.cardBorder
   },
   searchIcon: {
-    fontSize: 16,
     marginRight: 8
   },
   searchInput: {
     flex: 1,
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     fontSize: 14,
     paddingVertical: 10
   },
@@ -236,25 +239,25 @@ const styles = StyleSheet.create({
     gap: 8
   },
   categoryChip: {
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     paddingVertical: 6,
     paddingHorizontal: 14,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#1E293B'
+    borderColor: colors.cardBorder
   },
   categoryChipActive: {
     backgroundColor: colors.primary,
     borderColor: colors.primary
   },
   categoryText: {
-    color: '#94A3B8',
+    color: colors.textMuted,
     fontSize: 13,
     fontWeight: '600'
   },
   categoryTextActive: {
-    color: '#0A0E17',
-    fontWeight: '700'
+    color: colors.white,
+    fontWeight: '800'
   },
   section: {
     marginTop: 18,
@@ -266,20 +269,20 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#F8FAFC'
+    color: colors.textPrimary
   },
   sectionSub: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.textMuted,
     marginTop: 2
   },
   suggestedCard: {
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     borderRadius: 18,
     padding: 20,
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: '#26354D',
+    borderColor: colors.cardBorder,
     width: '100%',
     maxWidth: 340
   },
@@ -292,17 +295,17 @@ const styles = StyleSheet.create({
     borderColor: colors.primary
   },
   cardName: {
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     fontSize: 17,
     fontWeight: '800'
   },
   cardDept: {
-    color: '#94A3B8',
+    color: colors.textSecondary,
     fontSize: 12,
     marginTop: 2
   },
   cardCollege: {
-    color: '#64748B',
+    color: colors.textMuted,
     fontSize: 11,
     marginTop: 2
   },
@@ -314,13 +317,15 @@ const styles = StyleSheet.create({
     marginVertical: 12
   },
   cardSkillTag: {
-    backgroundColor: '#1E293B',
+    backgroundColor: colors.tagBg,
     paddingVertical: 4,
     paddingHorizontal: 8,
-    borderRadius: 6
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: colors.cardBorder
   },
   cardSkillText: {
-    color: '#38BDF8',
+    color: colors.textSecondary,
     fontSize: 11,
     fontWeight: '600'
   },
@@ -333,27 +338,23 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#1E293B',
+    backgroundColor: colors.card,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#334155'
-  },
-  btnSkipText: {
-    color: '#94A3B8',
-    fontSize: 18,
-    fontWeight: '700'
+    borderColor: colors.cardBorder
   },
   cardBtnConnect: {
     backgroundColor: colors.primary,
     paddingVertical: 10,
     paddingHorizontal: 22,
     borderRadius: 22,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
   },
   btnConnectText: {
-    color: '#0A0E17',
+    color: colors.white,
     fontSize: 13,
     fontWeight: '800'
   },
@@ -365,22 +366,22 @@ const styles = StyleSheet.create({
   },
   hubTile: {
     width: '48%',
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 14,
-    borderWidth: 1
+    borderWidth: 1,
+    borderColor: colors.cardBorder
   },
   hubIcon: {
-    fontSize: 24,
     marginBottom: 8
   },
   hubTitle: {
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     fontSize: 14,
     fontWeight: '700'
   },
   hubDesc: {
-    color: '#64748B',
+    color: colors.textMuted,
     fontSize: 11,
     marginTop: 4,
     lineHeight: 15

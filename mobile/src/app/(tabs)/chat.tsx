@@ -10,6 +10,7 @@ import {
   Modal
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../theme/colors';
 import { useFeedback } from '../../context/FeedbackContext';
 
@@ -210,7 +211,7 @@ export default function ChatScreen() {
                 onPress={() => setSelectedThread(null)}
                 style={styles.closeBtn}
               >
-                <Text style={styles.closeBtnText}>←</Text>
+                <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
               </TouchableOpacity>
               <Image source={{ uri: selectedThread.avatar }} style={styles.modalAvatar} />
               <View style={{ flex: 1 }}>
@@ -241,7 +242,7 @@ export default function ChatScreen() {
                     <Text style={[styles.messageText, m.isMe && styles.messageTextMe]}>
                       {m.text}
                     </Text>
-                    <Text style={styles.messageTimestamp}>{m.time}</Text>
+                    <Text style={[styles.messageTimestamp, m.isMe && styles.messageTimestampMe]}>{m.time}</Text>
                   </View>
                 </View>
               ))}
@@ -260,7 +261,7 @@ export default function ChatScreen() {
                 style={styles.sendBtn}
                 onPress={handleSendMessage}
               >
-                <Text style={styles.sendIcon}>➤</Text>
+                <Ionicons name="send" size={16} color={colors.white} />
               </TouchableOpacity>
             </View>
           </View>
@@ -279,16 +280,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E293B'
+    borderBottomColor: colors.cardBorder,
+    backgroundColor: colors.bg
   },
   title: {
     fontSize: 22,
-    fontWeight: '800',
-    color: '#F8FAFC'
+    fontWeight: '900',
+    color: colors.textPrimary,
+    letterSpacing: -0.3
   },
   headerSubtitle: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.textMuted,
     marginTop: 2,
     marginBottom: 10
   },
@@ -300,22 +303,22 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 16,
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: '#1E293B'
+    borderColor: colors.cardBorder
   },
   filterChipActive: {
     backgroundColor: colors.primary,
     borderColor: colors.primary
   },
   filterText: {
-    color: '#94A3B8',
+    color: colors.textMuted,
     fontSize: 12,
     fontWeight: '600'
   },
   filterTextActive: {
-    color: '#0A0E17',
-    fontWeight: '700'
+    color: colors.white,
+    fontWeight: '800'
   },
   listContent: {
     padding: 18,
@@ -324,18 +327,20 @@ const styles = StyleSheet.create({
   },
   threadCard: {
     flexDirection: 'row',
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 14,
     borderWidth: 1,
-    borderColor: '#1E293B',
+    borderColor: colors.cardBorder,
     alignItems: 'center'
   },
   threadAvatar: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    marginRight: 12
+    marginRight: 12,
+    borderWidth: 1,
+    borderColor: colors.cardBorder
   },
   threadInfo: {
     flex: 1
@@ -348,17 +353,17 @@ const styles = StyleSheet.create({
   threadTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     flex: 1,
     marginRight: 8
   },
   threadTime: {
     fontSize: 11,
-    color: '#64748B'
+    color: colors.textMuted
   },
   lastMessage: {
     fontSize: 13,
-    color: '#94A3B8',
+    color: colors.textSecondary,
     marginTop: 4
   },
   badgeRow: {
@@ -373,16 +378,22 @@ const styles = StyleSheet.create({
     borderRadius: 4
   },
   tagTeam: {
-    backgroundColor: '#0C4A6E'
+    backgroundColor: colors.primaryMuted,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 36, 50, 0.3)'
   },
   tagFriend: {
-    backgroundColor: '#064E3B'
+    backgroundColor: colors.tagBg,
+    borderWidth: 1,
+    borderColor: colors.cardBorder
   },
   tagStudy: {
-    backgroundColor: '#312E81'
+    backgroundColor: '#1E1E24',
+    borderWidth: 1,
+    borderColor: colors.cardBorder
   },
   scopeTagText: {
-    color: '#38BDF8',
+    color: colors.primary,
     fontSize: 9,
     fontWeight: '700'
   },
@@ -393,7 +404,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2
   },
   unreadCountText: {
-    color: '#0A0E17',
+    color: colors.white,
     fontSize: 10,
     fontWeight: '800'
   },
@@ -406,30 +417,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E293B',
-    backgroundColor: '#111726'
+    borderBottomColor: colors.cardBorder,
+    backgroundColor: colors.card
   },
   closeBtn: {
     paddingRight: 14
-  },
-  closeBtnText: {
-    fontSize: 22,
-    color: '#F8FAFC',
-    fontWeight: '700'
   },
   modalAvatar: {
     width: 38,
     height: 38,
     borderRadius: 19,
-    marginRight: 10
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: colors.cardBorder
   },
   modalTitle: {
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     fontSize: 15,
     fontWeight: '700'
   },
   modalSub: {
-    color: '#94A3B8',
+    color: colors.textMuted,
     fontSize: 11
   },
   messagesContainer: {
@@ -446,7 +454,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start'
   },
   senderLabel: {
-    color: '#94A3B8',
+    color: colors.textMuted,
     fontSize: 11,
     fontWeight: '600',
     marginBottom: 3
@@ -460,38 +468,45 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary
   },
   bubbleOther: {
-    backgroundColor: '#1E293B'
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.cardBorder
   },
   messageText: {
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     fontSize: 14,
     lineHeight: 19
   },
   messageTextMe: {
-    color: '#0A0E17',
+    color: colors.white,
     fontWeight: '600'
   },
   messageTimestamp: {
     fontSize: 9,
-    color: '#64748B',
+    color: colors.textMuted,
     alignSelf: 'flex-end',
     marginTop: 4
+  },
+  messageTimestampMe: {
+    color: 'rgba(255, 255, 255, 0.75)'
   },
   inputBar: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 12,
     borderTopWidth: 1,
-    borderTopColor: '#1E293B',
-    backgroundColor: '#111726'
+    borderTopColor: colors.cardBorder,
+    backgroundColor: colors.card
   },
   textInput: {
     flex: 1,
-    backgroundColor: '#161F30',
+    backgroundColor: colors.inputBg,
+    borderWidth: 1,
+    borderColor: colors.inputBorder,
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 10,
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     fontSize: 14,
     marginRight: 10
   },
@@ -502,10 +517,5 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center'
-  },
-  sendIcon: {
-    fontSize: 16,
-    color: '#0A0E17',
-    fontWeight: '800'
   }
 });

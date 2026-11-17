@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../theme/colors';
 import { sqliteService, OfflinePost } from '../../services/sqlite.service';
 import { useFeedback } from '../../context/FeedbackContext';
@@ -96,6 +97,11 @@ export default function HomeScreen() {
       {/* Top Header */}
       <View style={styles.header}>
         <View style={styles.logoRow}>
+          <Image
+            source={require('../../../assets/logo.png')}
+            style={styles.brandLogo}
+            resizeMode="contain"
+          />
           <Text style={styles.brandTitle}>TRYBEL</Text>
           <View style={styles.verifiedCampusTag}>
             <Text style={styles.verifiedDot}>●</Text>
@@ -110,7 +116,7 @@ export default function HomeScreen() {
               onPress={lockApp}
               accessibilityLabel="Lock App"
             >
-              <Text style={styles.headerBtnIcon}>🔒</Text>
+              <Ionicons name="lock-closed-outline" size={18} color={colors.textPrimary} />
             </TouchableOpacity>
           )}
 
@@ -119,7 +125,7 @@ export default function HomeScreen() {
             onPress={() => router.push('/chatbot')}
             accessibilityLabel="Campus AI Assistant"
           >
-            <Text style={styles.headerBtnIcon}>🤖</Text>
+            <Ionicons name="sparkles" size={17} color={colors.primary} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -127,7 +133,7 @@ export default function HomeScreen() {
             onPress={() => router.push('/notifications')}
             accessibilityLabel="Notifications"
           >
-            <Text style={styles.headerBtnIcon}>🔔</Text>
+            <Ionicons name="notifications-outline" size={18} color={colors.textPrimary} />
           </TouchableOpacity>
         </View>
       </View>
@@ -160,7 +166,7 @@ export default function HomeScreen() {
             style={styles.actionChip}
             onPress={() => router.push('/study-partners')}
           >
-            <Text style={styles.actionIcon}>📚</Text>
+            <Ionicons name="book-outline" size={20} color={colors.primary} style={styles.actionIcon} />
             <Text style={styles.actionLabel}>Study Partners</Text>
             <Text style={styles.actionSub}>College-Only</Text>
           </TouchableOpacity>
@@ -169,7 +175,7 @@ export default function HomeScreen() {
             style={styles.actionChip}
             onPress={() => router.push('/teams')}
           >
-            <Text style={styles.actionIcon}>💻</Text>
+            <Ionicons name="people-outline" size={20} color={colors.primary} style={styles.actionIcon} />
             <Text style={styles.actionLabel}>Find Team</Text>
             <Text style={styles.actionSub}>Dual Toggle</Text>
           </TouchableOpacity>
@@ -178,7 +184,7 @@ export default function HomeScreen() {
             style={styles.actionChip}
             onPress={() => router.push('/clubs')}
           >
-            <Text style={styles.actionIcon}>🎪</Text>
+            <Ionicons name="flag-outline" size={20} color={colors.primary} style={styles.actionIcon} />
             <Text style={styles.actionLabel}>Clubs & Events</Text>
             <Text style={styles.actionSub}>With Feedback</Text>
           </TouchableOpacity>
@@ -187,7 +193,7 @@ export default function HomeScreen() {
             style={styles.actionChip}
             onPress={() => router.push('/challenges')}
           >
-            <Text style={styles.actionIcon}>🧩</Text>
+            <Ionicons name="trophy-outline" size={20} color={colors.primary} style={styles.actionIcon} />
             <Text style={styles.actionLabel}>Daily Puzzle</Text>
             <Text style={styles.actionSub}>Leaderboard</Text>
           </TouchableOpacity>
@@ -291,7 +297,7 @@ export default function HomeScreen() {
                     style={styles.postAction}
                     onPress={() => showFeedback('Liked post!', 'success')}
                   >
-                    <Text style={styles.postActionIcon}>❤️</Text>
+                    <Ionicons name="heart-outline" size={17} color={colors.primary} />
                     <Text style={styles.postActionCount}>{post.likes_count}</Text>
                   </TouchableOpacity>
 
@@ -299,7 +305,7 @@ export default function HomeScreen() {
                     style={styles.postAction}
                     onPress={() => router.push('/chat')}
                   >
-                    <Text style={styles.postActionIcon}>💬</Text>
+                    <Ionicons name="chatbubble-outline" size={16} color={colors.textSecondary} />
                     <Text style={styles.postActionCount}>{post.comments_count}</Text>
                   </TouchableOpacity>
 
@@ -307,7 +313,7 @@ export default function HomeScreen() {
                     style={styles.postAction}
                     onPress={() => router.push('/report')}
                   >
-                    <Text style={styles.postActionIcon}>⚠️</Text>
+                    <Ionicons name="flag-outline" size={16} color={colors.textMuted} />
                     <Text style={styles.postActionText}>Report</Text>
                   </TouchableOpacity>
                 </View>
@@ -332,34 +338,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E293B'
+    borderBottomColor: colors.cardBorder,
+    backgroundColor: colors.bg
   },
   logoRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10
   },
+  brandLogo: {
+    width: 32,
+    height: 32,
+    borderRadius: 8
+  },
   brandTitle: {
     fontSize: 22,
     fontWeight: '900',
-    color: '#F8FAFC',
-    letterSpacing: 1
+    color: colors.textPrimary,
+    letterSpacing: 1.2
   },
   verifiedCampusTag: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#064E3B',
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.cardBorder,
     paddingVertical: 4,
     paddingHorizontal: 8,
     borderRadius: 12,
-    gap: 4
+    gap: 5
   },
   verifiedDot: {
-    color: '#34D399',
-    fontSize: 8
+    color: colors.primary,
+    fontSize: 9
   },
   verifiedCampusText: {
-    color: '#34D399',
+    color: colors.textSecondary,
     fontSize: 11,
     fontWeight: '700'
   },
@@ -371,36 +385,35 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#161F30',
+    backgroundColor: colors.card,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#26354D'
-  },
-  headerBtnIcon: {
-    fontSize: 17
+    borderColor: colors.cardBorder
   },
   scrollContent: {
     paddingBottom: 110
   },
   bannerCard: {
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 18,
     borderWidth: 1.5,
-    borderColor: '#26354D',
+    borderColor: colors.cardBorder,
     width: '100%'
   },
   bannerBadge: {
-    backgroundColor: '#064E3B',
+    backgroundColor: colors.primaryMuted,
     alignSelf: 'flex-start',
     paddingVertical: 3,
     paddingHorizontal: 8,
     borderRadius: 6,
-    marginBottom: 8
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 36, 50, 0.3)'
   },
   bannerBadgeText: {
-    color: '#34D399',
+    color: colors.primary,
     fontSize: 10,
     fontWeight: '800',
     letterSpacing: 0.5
@@ -408,12 +421,12 @@ const styles = StyleSheet.create({
   bannerTitle: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: colors.textPrimary,
     letterSpacing: -0.3
   },
   bannerSub: {
     fontSize: 13,
-    color: '#94A3B8',
+    color: colors.textSecondary,
     marginTop: 4
   },
   bannerFooter: {
@@ -434,26 +447,25 @@ const styles = StyleSheet.create({
   },
   actionChip: {
     flex: 1,
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 6,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#1E293B'
+    borderColor: colors.cardBorder
   },
   actionIcon: {
-    fontSize: 22,
     marginBottom: 6
   },
   actionLabel: {
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     fontSize: 11,
     fontWeight: '700',
     textAlign: 'center'
   },
   actionSub: {
-    color: '#64748B',
+    color: colors.textMuted,
     fontSize: 9,
     fontWeight: '600',
     marginTop: 2
@@ -462,7 +474,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 18,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E293B',
+    borderBottomColor: colors.cardBorder,
     marginBottom: 14
   },
   feedTab: {
@@ -475,21 +487,21 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.primary
   },
   feedTabText: {
-    color: '#64748B',
+    color: colors.textMuted,
     fontSize: 13,
     fontWeight: '600'
   },
   feedTabTextActive: {
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     fontWeight: '800'
   },
   createPostBox: {
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     marginHorizontal: 18,
     borderRadius: 14,
     padding: 14,
     borderWidth: 1,
-    borderColor: '#1E293B',
+    borderColor: colors.cardBorder,
     marginBottom: 18
   },
   createPostRow: {
@@ -499,11 +511,13 @@ const styles = StyleSheet.create({
   myAvatar: {
     width: 38,
     height: 38,
-    borderRadius: 19
+    borderRadius: 19,
+    borderWidth: 1,
+    borderColor: colors.cardBorder
   },
   createInput: {
     flex: 1,
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     fontSize: 14,
     paddingTop: 8,
     minHeight: 40
@@ -512,7 +526,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginTop: 10,
     borderTopWidth: 1,
-    borderTopColor: '#1E293B',
+    borderTopColor: colors.cardBorder,
     paddingTop: 8
   },
   postBtn: {
@@ -525,8 +539,8 @@ const styles = StyleSheet.create({
     opacity: 0.5
   },
   postBtnText: {
-    color: '#0A0E17',
-    fontWeight: '700',
+    color: colors.white,
+    fontWeight: '800',
     fontSize: 13
   },
   postsList: {
@@ -534,11 +548,11 @@ const styles = StyleSheet.create({
     gap: 14
   },
   postCard: {
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#1E293B'
+    borderColor: colors.cardBorder
   },
   postHeader: {
     flexDirection: 'row',
@@ -549,27 +563,29 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    marginRight: 10
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: colors.cardBorder
   },
   postAuthorInfo: {
     flex: 1
   },
   authorName: {
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     fontSize: 14,
     fontWeight: '700'
   },
   authorRole: {
-    color: '#94A3B8',
+    color: colors.textSecondary,
     fontSize: 11,
     marginTop: 1
   },
   postTime: {
-    color: '#64748B',
+    color: colors.textMuted,
     fontSize: 11
   },
   postContent: {
-    color: '#E2E8F0',
+    color: '#E4E4E7',
     fontSize: 14,
     lineHeight: 20
   },
@@ -580,21 +596,24 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   tagChip: {
-    backgroundColor: '#1E293B',
+    backgroundColor: colors.tagBg,
     paddingVertical: 3,
     paddingHorizontal: 8,
-    borderRadius: 6
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: colors.cardBorder
   },
   tagChipCrossCollege: {
-    backgroundColor: '#0C4A6E'
+    backgroundColor: colors.primaryMuted,
+    borderColor: 'rgba(255, 36, 50, 0.3)'
   },
   tagText: {
-    color: '#94A3B8',
+    color: colors.textSecondary,
     fontSize: 11,
     fontWeight: '600'
   },
   tagTextCrossCollege: {
-    color: '#38BDF8'
+    color: colors.primary
   },
   postFooter: {
     flexDirection: 'row',
@@ -603,23 +622,20 @@ const styles = StyleSheet.create({
     marginTop: 14,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#1E293B'
+    borderTopColor: colors.cardBorder
   },
   postAction: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6
   },
-  postActionIcon: {
-    fontSize: 15
-  },
   postActionCount: {
-    color: '#94A3B8',
+    color: colors.textSecondary,
     fontSize: 12,
     fontWeight: '600'
   },
   postActionText: {
-    color: '#64748B',
+    color: colors.textMuted,
     fontSize: 11,
     fontWeight: '600'
   }

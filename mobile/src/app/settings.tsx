@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { useSecurity } from '../context/SecurityContext';
 import { useFeedback } from '../context/FeedbackContext';
@@ -87,8 +88,8 @@ export default function SettingsScreen() {
     <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Text style={styles.backBtnText}>←</Text>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn} accessibilityLabel="Back">
+          <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Settings & Security</Text>
         <View style={{ width: 36 }} />
@@ -210,7 +211,8 @@ export default function SettingsScreen() {
           {/* Immediate Lock Button */}
           {hasPin && (
             <TouchableOpacity style={styles.lockNowBtn} onPress={lockApp}>
-              <Text style={styles.lockNowText}>🔒 Lock App Now</Text>
+              <Ionicons name="lock-closed" size={16} color={colors.primary} style={{ marginRight: 6 }} />
+              <Text style={styles.lockNowText}>Lock App Now</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -338,11 +340,11 @@ const styles = StyleSheet.create({
     gap: 16
   },
   sectionCard: {
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 18,
     borderWidth: 1,
-    borderColor: '#1E293B'
+    borderColor: colors.cardBorder
   },
   sectionHeaderRow: {
     flexDirection: 'row',
@@ -352,20 +354,22 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#F8FAFC'
+    color: colors.textPrimary
   },
   badgeSecure: {
-    backgroundColor: '#0C4A6E',
-    color: '#38BDF8',
+    backgroundColor: colors.primaryMuted,
+    color: colors.primary,
     fontSize: 10,
     fontWeight: '800',
     paddingVertical: 3,
     paddingHorizontal: 8,
-    borderRadius: 6
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 36, 50, 0.25)'
   },
   sectionSubtitle: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.textMuted,
     marginTop: 4,
     marginBottom: 12,
     lineHeight: 16
@@ -378,11 +382,11 @@ const styles = StyleSheet.create({
   settingLabel: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#F8FAFC'
+    color: colors.textPrimary
   },
   settingSub: {
     fontSize: 12,
-    color: '#94A3B8',
+    color: colors.textSecondary,
     marginTop: 2
   },
   primaryBtn: {
@@ -392,39 +396,39 @@ const styles = StyleSheet.create({
     borderRadius: 8
   },
   primaryBtnText: {
-    color: '#0A0E17',
+    color: colors.white,
     fontSize: 12,
     fontWeight: '800'
   },
   dangerBtn: {
-    backgroundColor: '#450A0A',
+    backgroundColor: colors.dangerBg,
     paddingVertical: 8,
     paddingHorizontal: 14,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#7F1D1D'
+    borderColor: 'rgba(239, 68, 68, 0.3)'
   },
   dangerBtnText: {
-    color: '#FCA5A5',
+    color: colors.dangerText,
     fontSize: 12,
     fontWeight: '700'
   },
   pinSetupBox: {
-    backgroundColor: '#161F30',
+    backgroundColor: colors.tagBg,
     borderRadius: 12,
     padding: 14,
     marginTop: 12,
     borderWidth: 1,
-    borderColor: '#26354D'
+    borderColor: colors.cardBorder
   },
   pinSetupPrompt: {
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     fontSize: 12,
     fontWeight: '600',
     marginBottom: 8
   },
   pinInput: {
-    backgroundColor: '#0A0E17',
+    backgroundColor: colors.inputBg,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -432,7 +436,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     letterSpacing: 8,
     borderWidth: 1,
-    borderColor: '#334155',
+    borderColor: colors.inputBorder,
     textAlign: 'center',
     marginBottom: 10
   },
@@ -443,7 +447,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   savePinBtnText: {
-    color: '#0A0E17',
+    color: colors.white,
     fontWeight: '800',
     fontSize: 13
   },
@@ -454,65 +458,67 @@ const styles = StyleSheet.create({
   },
   timeoutChip: {
     flex: 1,
-    backgroundColor: '#161F30',
+    backgroundColor: colors.tagBg,
     paddingVertical: 8,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#26354D'
+    borderColor: colors.cardBorder
   },
   timeoutChipActive: {
     backgroundColor: colors.primary,
     borderColor: colors.primary
   },
   timeoutText: {
-    color: '#94A3B8',
+    color: colors.textMuted,
     fontSize: 12,
     fontWeight: '600'
   },
   timeoutTextActive: {
-    color: '#0A0E17',
+    color: colors.white,
     fontWeight: '800'
   },
   lockNowBtn: {
-    backgroundColor: '#1E293B',
+    backgroundColor: colors.primaryMuted,
+    flexDirection: 'row',
+    justifyContent: 'center',
     paddingVertical: 10,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 16,
     borderWidth: 1,
-    borderColor: '#38BDF8'
+    borderColor: 'rgba(255, 36, 50, 0.3)'
   },
   lockNowText: {
-    color: '#38BDF8',
+    color: colors.primary,
     fontSize: 13,
     fontWeight: '700'
   },
   notifyBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#161F30',
+    backgroundColor: colors.card,
     padding: 12,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#26354D'
+    borderColor: colors.cardBorder
   },
   notifyBtnIcon: {
     fontSize: 22,
     marginRight: 12
   },
   notifyBtnTitle: {
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     fontSize: 13,
     fontWeight: '700'
   },
   notifyBtnSub: {
-    color: '#94A3B8',
+    color: colors.textSecondary,
     fontSize: 11,
     marginTop: 2
   },
   aboutText: {
-    color: '#94A3B8',
+    color: colors.textSecondary,
     fontSize: 12,
     lineHeight: 18
   }

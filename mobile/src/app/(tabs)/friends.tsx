@@ -9,6 +9,7 @@ import {
   Dimensions
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../theme/colors';
 import { useFeedback } from '../../context/FeedbackContext';
 
@@ -187,7 +188,7 @@ export default function FriendsScreen() {
           <View style={styles.friendsList}>
             {requests.length === 0 ? (
               <View style={styles.emptyBox}>
-                <Text style={styles.emptyEmoji}>📬</Text>
+                <Ionicons name="mail-unread-outline" size={36} color={colors.textMuted} style={styles.emptyIcon} />
                 <Text style={styles.emptyTitle}>No Pending Requests</Text>
                 <Text style={styles.emptySub}>You are all caught up with your campus invitations.</Text>
               </View>
@@ -212,7 +213,7 @@ export default function FriendsScreen() {
                       style={styles.declineBtn}
                       onPress={() => handleDeclineRequest(r.id)}
                     >
-                      <Text style={styles.declineBtnText}>✕</Text>
+                      <Ionicons name="close" size={16} color={colors.textSecondary} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -225,7 +226,7 @@ export default function FriendsScreen() {
         {activeTab === 'photos' && (
           <View style={styles.photosGrid}>
             <View style={styles.privacyBanner}>
-              <Text style={styles.privacyIcon}>🔒</Text>
+              <Ionicons name="lock-closed" size={16} color={colors.primary} />
               <Text style={styles.privacyText}>
                 Photos are visible only to accepted friends via 15-min expiring signed URLs.
               </Text>
@@ -263,16 +264,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E293B'
+    borderBottomColor: colors.cardBorder,
+    backgroundColor: colors.bg
   },
   title: {
     fontSize: 22,
-    fontWeight: '800',
-    color: '#F8FAFC'
+    fontWeight: '900',
+    color: colors.textPrimary,
+    letterSpacing: -0.3
   },
   headerSubtitle: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.textMuted,
     marginTop: 2,
     marginBottom: 10
   },
@@ -284,22 +287,22 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 16,
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     borderWidth: 1,
-    borderColor: '#1E293B'
+    borderColor: colors.cardBorder
   },
   tabBtnActive: {
     backgroundColor: colors.primary,
     borderColor: colors.primary
   },
   tabBtnText: {
-    color: '#94A3B8',
+    color: colors.textMuted,
     fontSize: 12,
     fontWeight: '600'
   },
   tabBtnTextActive: {
-    color: '#0A0E17',
-    fontWeight: '700'
+    color: colors.white,
+    fontWeight: '800'
   },
   scrollContent: {
     padding: 18,
@@ -311,41 +314,45 @@ const styles = StyleSheet.create({
   friendCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 14,
     borderWidth: 1,
-    borderColor: '#1E293B'
+    borderColor: colors.cardBorder
   },
   friendAvatar: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    marginRight: 12
+    marginRight: 12,
+    borderWidth: 1,
+    borderColor: colors.cardBorder
   },
   friendInfo: {
     flex: 1
   },
   friendName: {
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     fontSize: 15,
     fontWeight: '700'
   },
   friendDept: {
-    color: '#94A3B8',
+    color: colors.textSecondary,
     fontSize: 12,
     marginTop: 2
   },
   verifiedTag: {
     alignSelf: 'flex-start',
-    backgroundColor: '#064E3B',
+    backgroundColor: colors.primaryMuted,
     paddingVertical: 2,
     paddingHorizontal: 6,
     borderRadius: 4,
-    marginTop: 4
+    marginTop: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 36, 50, 0.25)'
   },
   verifiedTagText: {
-    color: '#34D399',
+    color: colors.primary,
     fontSize: 9,
     fontWeight: '700'
   },
@@ -353,23 +360,23 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 8,
-    backgroundColor: '#1E293B',
+    backgroundColor: colors.tagBg,
     borderWidth: 1,
-    borderColor: '#334155'
+    borderColor: colors.cardBorder
   },
   unfriendBtnText: {
-    color: '#EF4444',
+    color: colors.danger,
     fontSize: 12,
     fontWeight: '600'
   },
   requestCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 14,
     borderWidth: 1,
-    borderColor: '#1E293B'
+    borderColor: colors.cardBorder
   },
   requestActions: {
     flexDirection: 'row',
@@ -383,40 +390,34 @@ const styles = StyleSheet.create({
     borderRadius: 8
   },
   acceptBtnText: {
-    color: '#0A0E17',
+    color: colors.white,
     fontSize: 12,
-    fontWeight: '700'
+    fontWeight: '800'
   },
   declineBtn: {
-    backgroundColor: '#1E293B',
+    backgroundColor: colors.tagBg,
     width: 32,
     height: 32,
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#334155'
-  },
-  declineBtnText: {
-    color: '#94A3B8',
-    fontSize: 12,
-    fontWeight: '700'
+    borderColor: colors.cardBorder
   },
   emptyBox: {
     alignItems: 'center',
     paddingVertical: 40
   },
-  emptyEmoji: {
-    fontSize: 36,
+  emptyIcon: {
     marginBottom: 8
   },
   emptyTitle: {
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     fontSize: 16,
     fontWeight: '700'
   },
   emptySub: {
-    color: '#64748B',
+    color: colors.textMuted,
     fontSize: 12,
     marginTop: 4
   },
@@ -426,17 +427,16 @@ const styles = StyleSheet.create({
   privacyBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#0C4A6E',
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.cardBorder,
     borderRadius: 10,
     padding: 10,
     marginBottom: 16,
     gap: 8
   },
-  privacyIcon: {
-    fontSize: 16
-  },
   privacyText: {
-    color: '#BAE6FD',
+    color: colors.textSecondary,
     fontSize: 11,
     fontWeight: '600',
     flex: 1
@@ -449,11 +449,11 @@ const styles = StyleSheet.create({
   },
   photoCard: {
     width: PHOTO_SIZE,
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     borderRadius: 12,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: '#1E293B',
+    borderColor: colors.cardBorder,
     marginBottom: 12
   },
   photoImg: {
@@ -464,7 +464,7 @@ const styles = StyleSheet.create({
     padding: 8
   },
   photoCaption: {
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     fontSize: 12,
     fontWeight: '600',
     lineHeight: 16
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
     fontWeight: '700'
   },
   photoTime: {
-    color: '#64748B',
+    color: colors.textMuted,
     fontSize: 10
   }
 });

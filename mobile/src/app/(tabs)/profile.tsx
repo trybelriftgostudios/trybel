@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../theme/colors';
 import { useSecurity } from '../../context/SecurityContext';
 import { useFeedback } from '../../context/FeedbackContext';
@@ -23,7 +24,7 @@ export default function ProfileScreen() {
 
   const studentProfile = {
     fullName: 'Varun Dulam',
-    email: 'varun@pappu',
+    email: 'varun.dulam@stpeters.edu.in',
     collegeName: "St. Peter's Engineering College",
     department: 'CSE',
     yearOfStudy: '3rd Year',
@@ -78,12 +79,12 @@ export default function ProfileScreen() {
         <Text style={styles.title}>My Campus Profile</Text>
         <View style={styles.headerActions}>
           {hasPin && (
-            <TouchableOpacity style={styles.headerBtn} onPress={lockApp}>
-              <Text style={styles.btnIcon}>🔒</Text>
+            <TouchableOpacity style={styles.headerBtn} onPress={lockApp} accessibilityLabel="Lock App">
+              <Ionicons name="lock-closed-outline" size={18} color={colors.textPrimary} />
             </TouchableOpacity>
           )}
-          <TouchableOpacity style={styles.headerBtn} onPress={() => router.push('/settings')}>
-            <Text style={styles.btnIcon}>⚙️</Text>
+          <TouchableOpacity style={styles.headerBtn} onPress={() => router.push('/settings')} accessibilityLabel="Settings">
+            <Ionicons name="settings-outline" size={18} color={colors.textPrimary} />
           </TouchableOpacity>
         </View>
       </View>
@@ -97,7 +98,7 @@ export default function ProfileScreen() {
               style={styles.avatar}
             />
             <View style={styles.verifiedCheckBadge}>
-              <Text style={styles.checkText}>✓</Text>
+              <Ionicons name="checkmark" size={14} color={colors.white} />
             </View>
           </View>
 
@@ -141,7 +142,7 @@ export default function ProfileScreen() {
               onPress={handleGeneratePdf}
               disabled={isExporting}
             >
-              <Text style={styles.actionBtnIcon}>📄</Text>
+              <Ionicons name="document-text-outline" size={22} color={colors.primary} style={styles.actionBtnIcon} />
               <View style={styles.actionBtnInfo}>
                 <Text style={styles.actionBtnTitle}>Generate & Share PDF Transcript</Text>
                 <Text style={styles.actionBtnSub}>Official student credentials, teams & verified projects</Text>
@@ -153,7 +154,7 @@ export default function ProfileScreen() {
               onPress={handleExportJson}
               disabled={isExporting}
             >
-              <Text style={styles.actionBtnIcon}>📦</Text>
+              <Ionicons name="cloud-upload-outline" size={22} color={colors.primary} style={styles.actionBtnIcon} />
               <View style={styles.actionBtnInfo}>
                 <Text style={styles.actionBtnTitle}>Export SQLite JSON Backup</Text>
                 <Text style={styles.actionBtnSub}>Share full offline database dump</Text>
@@ -164,7 +165,7 @@ export default function ProfileScreen() {
               style={[styles.actionButton, styles.restoreBtn]}
               onPress={handleRestoreJson}
             >
-              <Text style={styles.actionBtnIcon}>📥</Text>
+              <Ionicons name="cloud-download-outline" size={22} color={colors.textSecondary} style={styles.actionBtnIcon} />
               <View style={styles.actionBtnInfo}>
                 <Text style={styles.actionBtnTitle}>Restore JSON Backup</Text>
                 <Text style={styles.actionBtnSub}>Pick JSON file and restore into local storage</Text>
@@ -191,7 +192,8 @@ export default function ProfileScreen() {
           <View style={styles.tagsContainer}>
             {studentProfile.availableFor.map((item, idx) => (
               <View key={idx} style={styles.availableTag}>
-                <Text style={styles.availableTagText}>✓ {item}</Text>
+                <Ionicons name="checkmark-circle-outline" size={14} color={colors.primary} style={{ marginRight: 4 }} />
+                <Text style={styles.availableTagText}>{item}</Text>
               </View>
             ))}
           </View>
@@ -203,7 +205,10 @@ export default function ProfileScreen() {
             style={styles.adminLink}
             onPress={() => router.push('/admin')}
           >
-            <Text style={styles.adminLinkText}>🛡️ Open Moderator & Admin Panel &rarr;</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Ionicons name="shield-checkmark-outline" size={16} color={colors.primary} />
+              <Text style={styles.adminLinkText}>Open Moderator & Admin Panel &rarr;</Text>
+            </View>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -223,12 +228,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E293B'
+    borderBottomColor: colors.cardBorder,
+    backgroundColor: colors.bg
   },
   title: {
     fontSize: 22,
-    fontWeight: '800',
-    color: '#F8FAFC'
+    fontWeight: '900',
+    color: colors.textPrimary,
+    letterSpacing: -0.3
   },
   headerActions: {
     flexDirection: 'row',
@@ -238,14 +245,11 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#161F30',
+    backgroundColor: colors.card,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#26354D'
-  },
-  btnIcon: {
-    fontSize: 18
+    borderColor: colors.cardBorder
   },
   scrollContent: {
     padding: 18,
@@ -253,12 +257,12 @@ const styles = StyleSheet.create({
     gap: 16
   },
   profileCard: {
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     borderRadius: 18,
     padding: 20,
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: '#1E293B'
+    borderColor: colors.cardBorder
   },
   avatarRow: {
     position: 'relative',
@@ -282,17 +286,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#0A0E17'
-  },
-  checkText: {
-    color: '#0A0E17',
-    fontSize: 12,
-    fontWeight: '900'
+    borderColor: colors.card
   },
   fullName: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#F8FAFC'
+    color: colors.textPrimary
   },
   emailText: {
     fontSize: 13,
@@ -302,18 +301,18 @@ const styles = StyleSheet.create({
   },
   deptText: {
     fontSize: 13,
-    color: '#94A3B8',
+    color: colors.textSecondary,
     marginTop: 4
   },
   collegeText: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.textMuted,
     marginTop: 2
   },
   mottoText: {
     fontSize: 12,
     fontStyle: 'italic',
-    color: '#94A3B8',
+    color: colors.textSecondary,
     marginTop: 10
   },
   statsRow: {
@@ -321,7 +320,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: '#1E293B',
+    borderTopColor: colors.cardBorder,
     width: '100%',
     justifyContent: 'space-around',
     alignItems: 'center'
@@ -332,33 +331,33 @@ const styles = StyleSheet.create({
   statNum: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#F8FAFC'
+    color: colors.textPrimary
   },
   statLabel: {
     fontSize: 11,
-    color: '#64748B',
+    color: colors.textMuted,
     marginTop: 2
   },
   statDivider: {
     width: 1,
     height: 26,
-    backgroundColor: '#1E293B'
+    backgroundColor: colors.cardBorder
   },
   sectionCard: {
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 18,
     borderWidth: 1,
-    borderColor: '#1E293B'
+    borderColor: colors.cardBorder
   },
   sectionTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#F8FAFC'
+    color: colors.textPrimary
   },
   sectionSubtitle: {
     fontSize: 12,
-    color: '#64748B',
+    color: colors.textMuted,
     marginTop: 4,
     marginBottom: 12,
     lineHeight: 16
@@ -369,35 +368,34 @@ const styles = StyleSheet.create({
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#161F30',
+    backgroundColor: colors.tagBg,
     borderRadius: 12,
     padding: 12,
     borderWidth: 1,
-    borderColor: '#26354D'
+    borderColor: colors.cardBorder
   },
   pdfBtn: {
-    borderColor: colors.primary
+    borderColor: 'rgba(255, 36, 50, 0.4)'
   },
   jsonBtn: {
-    borderColor: '#38BDF8'
+    borderColor: colors.cardBorder
   },
   restoreBtn: {
-    borderColor: '#818CF8'
+    borderColor: colors.cardBorder
   },
   actionBtnIcon: {
-    fontSize: 24,
     marginRight: 12
   },
   actionBtnInfo: {
     flex: 1
   },
   actionBtnTitle: {
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     fontSize: 13,
     fontWeight: '700'
   },
   actionBtnSub: {
-    color: '#94A3B8',
+    color: colors.textSecondary,
     fontSize: 11,
     marginTop: 2
   },
@@ -408,24 +406,30 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   skillTag: {
-    backgroundColor: '#1E293B',
+    backgroundColor: colors.tagBg,
     paddingVertical: 5,
     paddingHorizontal: 10,
-    borderRadius: 6
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: colors.cardBorder
   },
   skillTagText: {
-    color: '#38BDF8',
+    color: colors.textSecondary,
     fontSize: 12,
     fontWeight: '600'
   },
   availableTag: {
-    backgroundColor: '#064E3B',
+    backgroundColor: colors.primaryMuted,
     paddingVertical: 5,
     paddingHorizontal: 10,
-    borderRadius: 6
+    borderRadius: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 36, 50, 0.25)'
   },
   availableTagText: {
-    color: '#34D399',
+    color: colors.primary,
     fontSize: 12,
     fontWeight: '700'
   },
@@ -437,7 +441,7 @@ const styles = StyleSheet.create({
     padding: 10
   },
   adminLinkText: {
-    color: '#818CF8',
+    color: colors.primary,
     fontSize: 13,
     fontWeight: '700'
   }

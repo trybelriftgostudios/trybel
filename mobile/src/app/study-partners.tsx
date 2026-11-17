@@ -237,13 +237,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E293B'
+    borderBottomColor: colors.cardBorder
   },
   backBtn: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#161F30',
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.cardBorder,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -259,14 +261,16 @@ const styles = StyleSheet.create({
   },
   lockedBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#064E3B',
+    backgroundColor: colors.primaryMuted,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 36, 50, 0.25)',
     paddingVertical: 2,
     paddingHorizontal: 6,
     borderRadius: 4,
     marginTop: 2
   },
   lockedBadgeText: {
-    color: '#34D399',
+    color: colors.primary,
     fontSize: 10,
     fontWeight: '700'
   },
@@ -277,14 +281,14 @@ const styles = StyleSheet.create({
     borderRadius: 8
   },
   addBtnText: {
-    color: '#0A0E17',
+    color: colors.white,
     fontSize: 12,
     fontWeight: '800'
   },
   tabsRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: '#1E293B'
+    borderBottomColor: colors.cardBorder
   },
   tabBtn: {
     flex: 1,
@@ -297,12 +301,12 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.primary
   },
   tabText: {
-    color: '#64748B',
+    color: colors.textMuted,
     fontSize: 13,
     fontWeight: '600'
   },
   tabTextActive: {
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     fontWeight: '800'
   },
   filterRow: {
@@ -312,19 +316,19 @@ const styles = StyleSheet.create({
     gap: 8
   },
   filterChip: {
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#1E293B'
+    borderColor: colors.cardBorder
   },
   filterChipActive: {
-    backgroundColor: '#1E293B',
+    backgroundColor: colors.primaryMuted,
     borderColor: colors.primary
   },
   filterChipText: {
-    color: '#64748B',
+    color: colors.textMuted,
     fontSize: 11,
     fontWeight: '700'
   },
@@ -337,11 +341,11 @@ const styles = StyleSheet.create({
     paddingBottom: 40
   },
   requestCard: {
-    backgroundColor: '#131B2E',
+    backgroundColor: colors.card,
     borderRadius: 14,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#1E293B'
+    borderColor: colors.cardBorder
   },
   cardHeader: {
     flexDirection: 'row',
@@ -351,26 +355,28 @@ const styles = StyleSheet.create({
   cardSubject: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#F8FAFC'
+    color: colors.textPrimary
   },
   cardRequester: {
     fontSize: 12,
-    color: '#94A3B8',
+    color: colors.textSecondary,
     marginTop: 2
   },
   modeBadge: {
-    backgroundColor: '#1E293B',
+    backgroundColor: colors.tagBg,
     paddingVertical: 3,
     paddingHorizontal: 8,
-    borderRadius: 6
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: colors.cardBorder
   },
   modeBadgeText: {
-    color: '#38BDF8',
+    color: colors.primary,
     fontSize: 10,
     fontWeight: '700'
   },
   cardGoal: {
-    color: '#E2E8F0',
+    color: '#E4E4E7',
     fontSize: 13,
     lineHeight: 18,
     marginVertical: 10
@@ -384,7 +390,7 @@ const styles = StyleSheet.create({
     fontSize: 13
   },
   slotText: {
-    color: '#94A3B8',
+    color: colors.textSecondary,
     fontSize: 12
   },
   cardFooter: {
@@ -394,16 +400,18 @@ const styles = StyleSheet.create({
     marginTop: 14,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#1E293B'
+    borderTopColor: colors.cardBorder
   },
   sameCampusNote: {
-    backgroundColor: '#064E3B',
+    backgroundColor: colors.primaryMuted,
     paddingVertical: 3,
     paddingHorizontal: 6,
-    borderRadius: 4
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 36, 50, 0.25)'
   },
   sameCampusNoteText: {
-    color: '#34D399',
+    color: colors.primary,
     fontSize: 10,
     fontWeight: '700'
   },
@@ -414,7 +422,7 @@ const styles = StyleSheet.create({
     borderRadius: 8
   },
   connectBtnText: {
-    color: '#0A0E17',
+    color: colors.white,
     fontSize: 12,
     fontWeight: '800'
   },
@@ -424,7 +432,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   modalSheet: {
-    backgroundColor: '#111726',
+    backgroundColor: colors.card,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 20,

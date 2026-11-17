@@ -3,25 +3,27 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  Image
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 
 const ONBOARDING_SLIDES = [
   {
-    icon: '🏛️',
+    iconName: 'school-outline' as const,
     title: 'Verified Campus Exclusivity',
     desc: 'Connect strictly with verified college students. Every user is authenticated via student roll numbers and institutional emails.'
   },
   {
-    icon: '🚀',
+    iconName: 'rocket-outline' as const,
     title: 'Cross-College Hackathon Squads',
     desc: 'Form high-performing teams for SIH, build hackathon projects, and collaborate across collegiate boundaries.'
   },
   {
-    icon: '🔒',
+    iconName: 'shield-checkmark-outline' as const,
     title: 'Offline-First & Biometric Lock',
     desc: 'Local SQLite data persistence with full hardware-accelerated Face ID, Fingerprint, and 4-digit PIN security.'
   }
@@ -44,7 +46,12 @@ export default function OnboardingScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
       <View style={styles.container}>
-        <View style={styles.skipRow}>
+        <View style={styles.topBar}>
+          <Image
+            source={require('../../assets/logo.png')}
+            style={styles.logoEmblem}
+            resizeMode="contain"
+          />
           <TouchableOpacity onPress={() => router.replace('/(tabs)')}>
             <Text style={styles.skipText}>Skip</Text>
           </TouchableOpacity>
@@ -52,7 +59,7 @@ export default function OnboardingScreen() {
 
         <View style={styles.slideContent}>
           <View style={styles.iconCircle}>
-            <Text style={styles.slideIcon}>{slide.icon}</Text>
+            <Ionicons name={slide.iconName} size={44} color={colors.primary} />
           </View>
           <Text style={styles.slideTitle}>{slide.title}</Text>
           <Text style={styles.slideDesc}>{slide.desc}</Text>
@@ -92,8 +99,15 @@ const styles = StyleSheet.create({
     padding: 24,
     justifyContent: 'space-between'
   },
-  skipRow: {
-    alignItems: 'flex-end'
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  logoEmblem: {
+    width: 38,
+    height: 38,
+    borderRadius: 10
   },
   skipText: {
     color: colors.textSecondary,
@@ -105,18 +119,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20
   },
   iconCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 96,
+    height: 96,
+    borderRadius: 48,
     backgroundColor: colors.card,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
     borderColor: colors.cardBorder,
     marginBottom: 24
-  },
-  slideIcon: {
-    fontSize: 48
   },
   slideTitle: {
     fontSize: 22,
@@ -153,7 +164,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   nextBtnText: {
-    color: colors.bg,
+    color: colors.white,
     fontSize: 16,
     fontWeight: '900'
   }

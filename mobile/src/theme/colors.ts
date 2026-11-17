@@ -1,28 +1,31 @@
 export const colors = {
-  bg: '#0A0E17',
-  card: '#111726',
-  cardBorder: '#1E293B',
-  inputBg: '#161F30',
-  inputBorder: '#2A374F',
-  textPrimary: '#F8FAFC',
-  textSecondary: '#94A3B8',
-  textMuted: '#64748B',
-  primary: '#22C55E', // Trybel Green CTA
-  primaryHover: '#16A34A',
+  bg: '#08080A', // Deep Matte Onyx
+  card: '#131316', // Deep Charcoal Surface
+  cardBorder: '#222226', // Subtle Graphite Border
+  inputBg: '#18181C',
+  inputBorder: '#2C2C32',
+  textPrimary: '#FFFFFF',
+  textSecondary: '#A1A1AA', // Silver Zinc
+  textMuted: '#71717A',
+  primary: '#FF2432', // Trybel Electric Crimson (from Brand Logo)
+  primaryHover: '#E01522',
+  primaryMuted: 'rgba(255, 36, 50, 0.12)',
   accentBlue: '#38BDF8',
-  accentIndigo: '#6366F1',
-  tagBg: '#1E293B',
-  tagText: '#E2E8F0',
-  badgeGreen: '#064E3B',
-  badgeGreenText: '#34D399',
-  badgeBlue: '#0C4A6E',
+  accentIndigo: '#818CF8',
+  tagBg: '#1C1C20',
+  tagText: '#F4F4F5',
+  badgeGreen: '#0E2A1E',
+  badgeGreenText: '#4ADE80',
+  badgeRed: '#3B0B0E',
+  badgeRedText: '#FF6B72',
+  badgeBlue: '#0F2236',
   badgeBlueText: '#38BDF8',
-  badgeOrange: '#7C2D12',
+  badgeOrange: '#2E180A',
   badgeOrangeText: '#FB923C',
   danger: '#EF4444',
-  dangerBg: '#450A0A',
+  dangerBg: '#2E0A0A',
   dangerText: '#FCA5A5',
-  border: '#1E293B',
+  border: '#222226',
   white: '#FFFFFF',
   black: '#000000'
 };

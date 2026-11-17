@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Platform } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useSecurity } from '../context/SecurityContext';
 import { colors } from '../theme/colors';
 
@@ -47,7 +48,7 @@ export const AppLockOverlay: React.FC = () => {
     <View style={styles.overlay}>
       <View style={styles.content}>
         <View style={styles.shieldIcon}>
-          <Text style={styles.lockEmoji}>🔒</Text>
+          <Ionicons name="lock-closed" size={30} color={colors.primary} />
         </View>
 
         <Text style={styles.title}>Trybel Campus Lock</Text>
@@ -101,9 +102,11 @@ export const AppLockOverlay: React.FC = () => {
                 onPress={unlockWithBiometrics}
                 activeOpacity={0.7}
               >
-                <Text style={styles.bioIcon}>
-                  {biometricsType === 'Face ID' ? '👤' : '👆'}
-                </Text>
+                <Ionicons
+                  name={biometricsType === 'Face ID' ? 'scan' : 'finger-print'}
+                  size={24}
+                  color={colors.primary}
+                />
               </TouchableOpacity>
             ) : (
               <View style={styles.keyButtonEmpty} />
@@ -122,7 +125,7 @@ export const AppLockOverlay: React.FC = () => {
               onPress={handleDelete}
               activeOpacity={0.7}
             >
-              <Text style={styles.delIcon}>⌫</Text>
+              <Ionicons name="backspace-outline" size={22} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
         </View>
@@ -138,7 +141,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#0A0E17',
+    backgroundColor: colors.bg,
     zIndex: 999999,
     justifyContent: 'center',
     alignItems: 'center'
@@ -153,25 +156,22 @@ const styles = StyleSheet.create({
     width: 68,
     height: 68,
     borderRadius: 34,
-    backgroundColor: '#162032',
+    backgroundColor: colors.card,
     borderWidth: 1.5,
-    borderColor: '#2A3C58',
+    borderColor: colors.cardBorder,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16
   },
-  lockEmoji: {
-    fontSize: 32
-  },
   title: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#F8FAFC',
+    color: colors.textPrimary,
     letterSpacing: -0.3
   },
   subtitle: {
     fontSize: 13,
-    color: '#94A3B8',
+    color: colors.textMuted,
     textAlign: 'center',
     marginTop: 8,
     paddingHorizontal: 16,
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     height: 16,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#334155',
+    borderColor: colors.cardBorder,
     backgroundColor: 'transparent'
   },
   dotFilled: {
@@ -218,11 +218,11 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: '#161F30',
+    backgroundColor: colors.card,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#26354D'
+    borderColor: colors.cardBorder
   },
   keyButtonEmpty: {
     width: 72,
@@ -231,20 +231,13 @@ const styles = StyleSheet.create({
   keyNumber: {
     fontSize: 26,
     fontWeight: '700',
-    color: '#F8FAFC'
+    color: colors.textPrimary
   },
   bioButton: {
-    backgroundColor: '#1E293B',
-    borderColor: '#38BDF8'
-  },
-  bioIcon: {
-    fontSize: 24
+    backgroundColor: colors.card,
+    borderColor: colors.primaryMuted
   },
   delButton: {
-    backgroundColor: '#1E293B'
-  },
-  delIcon: {
-    fontSize: 22,
-    color: '#94A3B8'
+    backgroundColor: colors.card
   }
 });
