@@ -45,7 +45,7 @@ export async function adminRoutes(fastify: FastifyInstance) {
   // ADMIN/MODERATOR ONLY ROUTES BELOW
   fastify.register(async (adminScope) => {
     adminScope.addHook('preHandler', authenticateToken);
-    adminScope.addHook('preHandler', requireRoles(['platform_moderator', 'super_admin']));
+    adminScope.addHook('preHandler', requireRoles(['campus_mod', 'platform_moderator', 'super_mod', 'main_admin', 'super_admin']));
 
     // 2. Get pending reports and queue stats
     adminScope.get('/reports', async (request: FastifyRequest, reply: FastifyReply) => {

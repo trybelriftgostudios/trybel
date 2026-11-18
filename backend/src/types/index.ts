@@ -1,4 +1,4 @@
-export type UserRole = 'student' | 'club_president' | 'platform_moderator' | 'super_admin';
+export type UserRole = 'student' | 'club_head' | 'club_president' | 'campus_mod' | 'platform_moderator' | 'super_mod' | 'main_admin' | 'super_admin';
 export type UserStatus = 'active' | 'suspended' | 'banned';
 
 export interface College {

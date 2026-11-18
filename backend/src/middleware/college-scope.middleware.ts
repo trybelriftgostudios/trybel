@@ -4,8 +4,10 @@ import { UserRole } from '../types/index.js';
 /**
  * Enforces that the authenticated user belongs to the target college.
  * Hard barrier for study partners, college-only chat, and college-only feeds.
+ * Super mods and main admins have cross-college access.
  */
-export function requireSameCollege(targetCollegeId: string, userCollegeId: string): boolean {
+export function requireSameCollege(targetCollegeId: string, userCollegeId: string, userRole?: UserRole): boolean {
+  if (userRole === 'super_mod' || userRole === 'main_admin' || userRole === 'super_admin') return true;
   return targetCollegeId === userCollegeId;
 }
 
