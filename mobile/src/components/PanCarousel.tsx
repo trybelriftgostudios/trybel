@@ -2,15 +2,12 @@ import React, { useState, useRef } from 'react';
 import {
   View,
   StyleSheet,
-  ScrollView,
+  PanResponder,
+  Animated,
   Dimensions,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
   StyleProp,
-  ViewStyle,
-  Platform
+  ViewStyle
 } from 'react-native';
-import * as Haptics from 'expo-haptics';
 import { colors } from '../theme/colors';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -26,59 +23,81 @@ interface PanCarouselProps<T> {
 export function PanCarousel<T>({
   data,
   renderItem,
-  itemWidth = SCREEN_WIDTH - 44,
+  itemWidth = SCREEN_WIDTH - 48,
   containerStyle,
   onIndexChange
 }: PanCarouselProps<T>) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const scrollRef = useRef<any>(null);
-  const itemGap = 12;
-  const snapInterval = itemWidth + itemGap;
+  const panAnim = useRef(new Animated.Value(0)).current;
 
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const offsetX = event.nativeEvent.contentOffset.x;
-    const newIndex = Math.round(offsetX / snapInterval);
-    if (newIndex >= 0 && newIndex < data.length && newIndex !== currentIndex) {
-      setCurrentIndex(newIndex);
-      if (onIndexChange) onIndexChange(newIndex);
-      if (Platform.OS !== 'web') {
-        try {
-          Haptics.selectionAsync();
-        } catch {}
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (_, gesture) => Math.abs(gesture.dx) > 10,
+      onPanResponderMove: (_, gesture) => {
+        panAnim.setValue(gesture.dx);
+      },
+      onPanResponderRelease: (_, gesture) => {
+        const threshold = itemWidth * 0.22;
+        if (gesture.dx < -threshold && currentIndex < data.length - 1) {
+          // Swipe Left -> Next
+          Animated.timing(panAnim, {
+            toValue: -itemWidth,
+            duration: 180,
+            useNativeDriver: true
+          }).start(() => {
+            const nextIdx = currentIndex + 1;
+            setCurrentIndex(nextIdx);
+            panAnim.setValue(0);
+            if (onIndexChange) onIndexChange(nextIdx);
+          });
+        } else if (gesture.dx > threshold && currentIndex > 0) {
+          // Swipe Right -> Prev
+          Animated.timing(panAnim, {
+            toValue: itemWidth,
+            duration: 180,
+            useNativeDriver: true
+          }).start(() => {
+            const prevIdx = currentIndex - 1;
+            setCurrentIndex(prevIdx);
+            panAnim.setValue(0);
+            if (onIndexChange) onIndexChange(prevIdx);
+          });
+        } else {
+          // Snap back
+          Animated.spring(panAnim, {
+            toValue: 0,
+            friction: 7,
+            tension: 50,
+            useNativeDriver: true
+          }).start();
+        }
       }
-    }
-  };
+    })
+  ).current;
 
   if (!data || data.length === 0) return null;
 
   return (
     <View style={[styles.container, containerStyle]}>
-      <ScrollView
-        ref={scrollRef}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        decelerationRate="fast"
-        snapToInterval={snapInterval}
-        snapToAlignment="center"
-        contentContainerStyle={styles.scrollContent}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        bounces={true}
+      <Animated.View
+        style={[
+          styles.cardWrapper,
+          {
+            width: itemWidth,
+            transform: [
+              {
+                translateX: panAnim
+              }
+            ]
+          }
+        ]}
+        {...panResponder.panHandlers}
       >
-        {data.map((item, index) => (
-          <View
-            key={index}
-            style={[
-              styles.cardWrapper,
-              { width: itemWidth, marginRight: index === data.length - 1 ? 0 : itemGap }
-            ]}
-          >
-            {renderItem(item, index)}
-          </View>
-        ))}
-      </ScrollView>
+        {renderItem(data[currentIndex], currentIndex)}
+      </Animated.View>
 
-      {/* Apple-style Smooth Pill Indicators */}
+      {/* Pagination Indicators */}
       {data.length > 1 && (
         <View style={styles.paginationRow}>
           {data.map((_, i) => (
@@ -98,33 +117,30 @@ export function PanCarousel<T>({
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 14
-  },
-  scrollContent: {
-    paddingHorizontal: 18,
-    alignItems: 'center'
+    alignItems: 'center',
+    marginVertical: 12
   },
   cardWrapper: {
-    borderRadius: 20,
-    overflow: 'hidden'
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   paginationRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 12,
+    marginTop: 14,
     gap: 6
   },
   indicator: {
-    height: 5,
-    borderRadius: 2.5
+    height: 6,
+    borderRadius: 3
   },
   activeIndicator: {
-    width: 20,
+    width: 22,
     backgroundColor: colors.primary
   },
   inactiveIndicator: {
-    width: 5,
-    backgroundColor: colors.cardBorder
+    width: 6,
+    backgroundColor: '#334155'
   }
 });

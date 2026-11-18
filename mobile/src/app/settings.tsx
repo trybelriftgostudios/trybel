@@ -89,7 +89,7 @@ export default function SettingsScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn} accessibilityLabel="Back">
-          <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+          <Ionicons name="chevron-back" size={24} color={colors.primary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Settings & Security</Text>
         <View style={{ width: 36 }} />
@@ -311,28 +311,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 18,
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1E293B'
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.separator
   },
   backBtn: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#161F30',
+    backgroundColor: colors.card,
     justifyContent: 'center',
     alignItems: 'center'
   },
-  backBtnText: {
-    color: '#F8FAFC',
-    fontSize: 20,
-    fontWeight: '700'
-  },
   headerTitle: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#F8FAFC'
+    fontSize: 17,
+    fontWeight: '600',
+    color: colors.textPrimary
   },
   scrollContent: {
     padding: 18,

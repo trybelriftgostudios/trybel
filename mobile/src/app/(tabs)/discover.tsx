@@ -6,24 +6,15 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  Image,
-  Platform
+  Image
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
 import { colors } from '../../theme/colors';
 import { useFeedback } from '../../context/FeedbackContext';
 import { SwipeCardDeck } from '../../components/SwipeCardDeck';
-
-const triggerHaptic = (style: Haptics.ImpactFeedbackStyle = Haptics.ImpactFeedbackStyle.Light) => {
-  if (Platform.OS !== 'web') {
-    try {
-      Haptics.impactAsync(style);
-    } catch {}
-  }
-};
+import { IOSSegmentedControl } from '../../components/IOSSegmentedControl';
 
 export default function DiscoverScreen() {
   const router = useRouter();
@@ -63,18 +54,22 @@ export default function DiscoverScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
-      {/* Header Search */}
+      {/* iOS Header with Search Bar */}
       <View style={styles.header}>
-        <Text style={styles.title}>Discover Campus</Text>
         <View style={styles.searchBar}>
-          <Ionicons name="search-outline" size={18} color={colors.textMuted} style={styles.searchIcon} />
+          <Ionicons name="search" size={17} color={colors.textSecondary} style={styles.searchIcon} />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search peers, skills, hackathon teams..."
-            placeholderTextColor={colors.textMuted}
+            placeholder="Search peers, skills, hackathons..."
+            placeholderTextColor={colors.textSecondary}
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
+          {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={() => setSearchQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <Ionicons name="close-circle" size={17} color={colors.textSecondary} />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
 
@@ -83,41 +78,24 @@ export default function DiscoverScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Category Filter Chips */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.categoriesRow}
-        >
-          {categories.map((cat) => (
-            <TouchableOpacity
-              key={cat}
-              style={[
-                styles.categoryChip,
-                activeCategory === cat && styles.categoryChipActive
-              ]}
-              activeOpacity={0.7}
-              onPress={() => {
-                triggerHaptic();
-                setActiveCategory(cat);
-              }}
-            >
-              <Text
-                style={[
-                  styles.categoryText,
-                  activeCategory === cat && styles.categoryTextActive
-                ]}
-              >
-                {cat}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+        {/* iOS Large Title */}
+        <View style={styles.largeTitleSection}>
+          <Text style={styles.largeTitle}>Discover</Text>
+        </View>
+
+        {/* Category Segmented Control */}
+        <View style={styles.segmentedWrapper}>
+          <IOSSegmentedControl
+            values={categories}
+            selectedIndex={categories.indexOf(activeCategory)}
+            onChange={(cat) => setActiveCategory(cat)}
+          />
+        </View>
 
         {/* Swipeable Peer Connect Card Deck */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Suggested Connections</Text>
+            <Text style={styles.sectionTitle}>SUGGESTED PEERS</Text>
             <Text style={styles.sectionSub}>Swipe right to connect</Text>
           </View>
 
@@ -149,7 +127,7 @@ export default function DiscoverScreen() {
                     style={styles.cardBtnSkip}
                     onPress={() => showFeedback(`Passed on ${student.name}`, 'info')}
                   >
-                    <Ionicons name="close" size={20} color={colors.textMuted} />
+                    <Ionicons name="close" size={20} color={colors.textSecondary} />
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -165,44 +143,70 @@ export default function DiscoverScreen() {
           />
         </View>
 
-        {/* Explore Hub Tiles */}
+        {/* Inset Grouped Hub List (iOS Settings / HIG Style) */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Explore Hubs</Text>
-          <View style={styles.tilesGrid}>
+          <Text style={styles.sectionTitle}>EXPLORE HUBS</Text>
+          <View style={styles.groupedList}>
             <TouchableOpacity
-              style={styles.hubTile}
+              style={styles.groupedRow}
               onPress={() => router.push('/study-partners')}
             >
-              <Ionicons name="book-outline" size={24} color={colors.primary} style={styles.hubIcon} />
-              <Text style={styles.hubTitle}>Study Partners</Text>
-              <Text style={styles.hubDesc}>Find exam & subject study buddies (College Only)</Text>
+              <View style={[styles.hubIconCircle, { backgroundColor: 'rgba(52, 199, 89, 0.18)' }]}>
+                <Ionicons name="book" size={18} color="#32D74B" />
+              </View>
+              <View style={styles.rowContent}>
+                <Text style={styles.rowTitle}>Study Partners</Text>
+                <Text style={styles.rowDesc}>Find exam & subject buddies (College Only)</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
             </TouchableOpacity>
 
+            <View style={styles.rowSeparator} />
+
             <TouchableOpacity
-              style={styles.hubTile}
+              style={styles.groupedRow}
               onPress={() => router.push('/teams')}
             >
-              <Ionicons name="people-outline" size={24} color={colors.primary} style={styles.hubIcon} />
-              <Text style={styles.hubTitle}>Hackathon Teams</Text>
-              <Text style={styles.hubDesc}>Form or join SIH 2025 squads (Dual Visibility)</Text>
+              <View style={[styles.hubIconCircle, { backgroundColor: 'rgba(10, 132, 255, 0.18)' }]}>
+                <Ionicons name="people" size={18} color="#0A84FF" />
+              </View>
+              <View style={styles.rowContent}>
+                <Text style={styles.rowTitle}>Hackathon Teams</Text>
+                <Text style={styles.rowDesc}>Form or join SIH 2025 squads (Dual Visibility)</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
             </TouchableOpacity>
 
+            <View style={styles.rowSeparator} />
+
             <TouchableOpacity
-              style={styles.hubTile}
+              style={styles.groupedRow}
               onPress={() => router.push('/clubs')}
             >
-              <Ionicons name="flag-outline" size={24} color={colors.primary} style={styles.hubIcon} />
-              <Text style={styles.hubTitle}>Clubs & Events</Text>
-              <Text style={styles.hubDesc}>Workshops, tech fests, and verified RSVP feedback</Text>
+              <View style={[styles.hubIconCircle, { backgroundColor: 'rgba(94, 92, 230, 0.18)' }]}>
+                <Ionicons name="flag" size={18} color="#5E5CE6" />
+              </View>
+              <View style={styles.rowContent}>
+                <Text style={styles.rowTitle}>Clubs & Events</Text>
+                <Text style={styles.rowDesc}>Workshops, tech fests, verified RSVP</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
             </TouchableOpacity>
 
+            <View style={styles.rowSeparator} />
+
             <TouchableOpacity
-              style={styles.hubTile}
+              style={styles.groupedRow}
               onPress={() => router.push('/challenges')}
             >
-              <Ionicons name="trophy-outline" size={24} color={colors.primary} style={styles.hubIcon} />
-              <Text style={styles.hubTitle}>Daily Challenge</Text>
-              <Text style={styles.hubDesc}>Daily engineering puzzle with campus ranking</Text>
+              <View style={[styles.hubIconCircle, { backgroundColor: 'rgba(255, 159, 10, 0.18)' }]}>
+                <Ionicons name="trophy" size={18} color="#FF9F0A" />
+              </View>
+              <View style={styles.rowContent}>
+                <Text style={styles.rowTitle}>Daily Challenge</Text>
+                <Text style={styles.rowDesc}>Daily engineering puzzle & campus ranking</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
             </TouchableOpacity>
           </View>
         </View>
@@ -218,102 +222,87 @@ const styles = StyleSheet.create({
     overflow: 'hidden'
   },
   header: {
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.cardBorder,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.separator,
     backgroundColor: colors.bg,
     zIndex: 10,
     elevation: 4
   },
-  scrollView: {
-    flex: 1
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '900',
-    color: colors.textPrimary,
-    marginBottom: 10,
-    letterSpacing: -0.3
-  },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.card,
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+    backgroundColor: colors.inputBg,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    height: 38
   },
   searchIcon: {
-    marginRight: 8
+    marginRight: 6
   },
   searchInput: {
     flex: 1,
     color: colors.textPrimary,
-    fontSize: 14,
-    paddingVertical: 10
+    fontSize: 16,
+    paddingVertical: 0
+  },
+  scrollView: {
+    flex: 1
   },
   scrollContent: {
     paddingBottom: 110
   },
-  categoriesRow: {
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-    gap: 8
+  largeTitleSection: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8
   },
-  categoryChip: {
-    backgroundColor: colors.card,
-    paddingVertical: 6,
-    paddingHorizontal: 14,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+  largeTitle: {
+    fontSize: 34,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    letterSpacing: 0.37
   },
-  categoryChipActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary
-  },
-  categoryText: {
-    color: colors.textMuted,
-    fontSize: 13,
-    fontWeight: '600'
-  },
-  categoryTextActive: {
-    color: colors.white,
-    fontWeight: '800'
+  segmentedWrapper: {
+    paddingHorizontal: 16,
+    marginTop: 6,
+    marginBottom: 16
   },
   section: {
     marginTop: 18,
-    paddingHorizontal: 18
+    paddingHorizontal: 16
   },
   sectionHeader: {
-    marginBottom: 12
+    marginBottom: 10
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: colors.textPrimary
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.textSecondary,
+    letterSpacing: 0.5,
+    marginBottom: 4,
+    marginLeft: 4
   },
   sectionSub: {
     fontSize: 12,
     color: colors.textMuted,
-    marginTop: 2
+    marginLeft: 4
   },
   suggestedCard: {
     backgroundColor: colors.card,
-    borderRadius: 18,
+    borderRadius: 16,
     padding: 20,
     alignItems: 'center',
-    borderWidth: 1.5,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.cardBorder,
     width: '100%',
     maxWidth: 340
   },
   cardAvatar: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+    width: 76,
+    height: 76,
+    borderRadius: 38,
     marginBottom: 10,
     borderWidth: 2,
     borderColor: colors.primary
@@ -321,11 +310,12 @@ const styles = StyleSheet.create({
   cardName: {
     color: colors.textPrimary,
     fontSize: 17,
-    fontWeight: '800'
+    fontWeight: '600',
+    letterSpacing: -0.2
   },
   cardDept: {
     color: colors.textSecondary,
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 2
   },
   cardCollege: {
@@ -338,15 +328,13 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 6,
     justifyContent: 'center',
-    marginVertical: 12
+    marginVertical: 14
   },
   cardSkillTag: {
     backgroundColor: colors.tagBg,
     paddingVertical: 4,
     paddingHorizontal: 8,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+    borderRadius: 6
   },
   cardSkillText: {
     color: colors.textSecondary,
@@ -362,11 +350,9 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: colors.card,
+    backgroundColor: colors.systemFill,
     justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+    alignItems: 'center'
   },
   cardBtnConnect: {
     backgroundColor: colors.primary,
@@ -379,35 +365,47 @@ const styles = StyleSheet.create({
   },
   btnConnectText: {
     color: colors.white,
-    fontSize: 13,
-    fontWeight: '800'
-  },
-  tilesGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-    marginTop: 12
-  },
-  hubTile: {
-    width: '48%',
-    backgroundColor: colors.card,
-    borderRadius: 14,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: colors.cardBorder
-  },
-  hubIcon: {
-    marginBottom: 8
-  },
-  hubTitle: {
-    color: colors.textPrimary,
     fontSize: 14,
-    fontWeight: '700'
+    fontWeight: '600'
   },
-  hubDesc: {
-    color: colors.textMuted,
-    fontSize: 11,
-    marginTop: 4,
-    lineHeight: 15
+  groupedList: {
+    backgroundColor: colors.card,
+    borderRadius: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.cardBorder,
+    overflow: 'hidden'
+  },
+  groupedRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16
+  },
+  hubIconCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12
+  },
+  rowContent: {
+    flex: 1
+  },
+  rowTitle: {
+    color: colors.textPrimary,
+    fontSize: 16,
+    fontWeight: '600',
+    letterSpacing: -0.2
+  },
+  rowDesc: {
+    color: colors.textSecondary,
+    fontSize: 12,
+    marginTop: 2
+  },
+  rowSeparator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.separator,
+    marginLeft: 56
   }
 });

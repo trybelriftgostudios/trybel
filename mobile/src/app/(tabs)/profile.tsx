@@ -76,7 +76,7 @@ export default function ProfileScreen() {
     <SafeAreaView style={styles.safeArea} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>My Campus Profile</Text>
+        <Text style={styles.headerTitle}>Profile</Text>
         <View style={styles.headerActions}>
           {hasPin && (
             <TouchableOpacity style={styles.headerBtn} onPress={lockApp} accessibilityLabel="Lock App">
@@ -94,7 +94,12 @@ export default function ProfileScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Profile Card */}
+        {/* iOS Large Title */}
+        <View style={styles.largeTitleSection}>
+          <Text style={styles.largeTitle}>Profile</Text>
+        </View>
+
+        {/* User Profile Card (iOS Apple ID Style) */}
         <View style={styles.profileCard}>
           <View style={styles.avatarRow}>
             <Image
@@ -102,16 +107,15 @@ export default function ProfileScreen() {
               style={styles.avatar}
             />
             <View style={styles.verifiedCheckBadge}>
-              <Ionicons name="checkmark" size={14} color={colors.white} />
+              <Ionicons name="checkmark" size={13} color={colors.white} />
             </View>
           </View>
 
           <Text style={styles.fullName}>{studentProfile.fullName}</Text>
           <Text style={styles.emailText}>{studentProfile.email}</Text>
           <Text style={styles.deptText}>
-            {studentProfile.department} • {studentProfile.yearOfStudy}
+            {studentProfile.department} • {studentProfile.yearOfStudy} • {studentProfile.collegeName}
           </Text>
-          <Text style={styles.collegeText}>{studentProfile.collegeName}</Text>
           <Text style={styles.mottoText}>“{studentProfile.motto}”</Text>
 
           {/* Quick Stats Grid */}
@@ -133,87 +137,106 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* PDF & Data Backup Tools Card */}
-        <View style={styles.sectionCard}>
-          <Text style={styles.sectionTitle}>Campus Reports & Data Portability</Text>
-          <Text style={styles.sectionSubtitle}>
-            Generate certified PDF transcripts or export/restore encrypted SQLite backups.
-          </Text>
-
-          <View style={styles.buttonStack}>
+        {/* PDF & Data Backup Inset Group (iOS Settings Style) */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionHeader}>DATA & PORTABILITY</Text>
+          <View style={styles.groupedList}>
             <TouchableOpacity
-              style={[styles.actionButton, styles.pdfBtn]}
+              style={styles.groupedRow}
               onPress={handleGeneratePdf}
               disabled={isExporting}
             >
-              <Ionicons name="document-text-outline" size={22} color={colors.primary} style={styles.actionBtnIcon} />
-              <View style={styles.actionBtnInfo}>
-                <Text style={styles.actionBtnTitle}>Generate & Share PDF Transcript</Text>
-                <Text style={styles.actionBtnSub}>Official student credentials, teams & verified projects</Text>
+              <View style={[styles.rowIconCircle, { backgroundColor: 'rgba(255, 36, 50, 0.18)' }]}>
+                <Ionicons name="document-text" size={18} color={colors.primary} />
               </View>
+              <View style={styles.rowInfo}>
+                <Text style={styles.rowTitle}>Generate PDF Transcript</Text>
+                <Text style={styles.rowSub}>Official credentials & verified projects</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
             </TouchableOpacity>
 
+            <View style={styles.rowSeparator} />
+
             <TouchableOpacity
-              style={[styles.actionButton, styles.jsonBtn]}
+              style={styles.groupedRow}
               onPress={handleExportJson}
               disabled={isExporting}
             >
-              <Ionicons name="cloud-upload-outline" size={22} color={colors.primary} style={styles.actionBtnIcon} />
-              <View style={styles.actionBtnInfo}>
-                <Text style={styles.actionBtnTitle}>Export SQLite JSON Backup</Text>
-                <Text style={styles.actionBtnSub}>Share full offline database dump</Text>
+              <View style={[styles.rowIconCircle, { backgroundColor: 'rgba(10, 132, 255, 0.18)' }]}>
+                <Ionicons name="cloud-upload" size={18} color="#0A84FF" />
               </View>
+              <View style={styles.rowInfo}>
+                <Text style={styles.rowTitle}>Export SQLite Backup</Text>
+                <Text style={styles.rowSub}>Encrypted offline database dump</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
             </TouchableOpacity>
+
+            <View style={styles.rowSeparator} />
 
             <TouchableOpacity
-              style={[styles.actionButton, styles.restoreBtn]}
+              style={styles.groupedRow}
               onPress={handleRestoreJson}
             >
-              <Ionicons name="cloud-download-outline" size={22} color={colors.textSecondary} style={styles.actionBtnIcon} />
-              <View style={styles.actionBtnInfo}>
-                <Text style={styles.actionBtnTitle}>Restore JSON Backup</Text>
-                <Text style={styles.actionBtnSub}>Pick JSON file and restore into local storage</Text>
+              <View style={[styles.rowIconCircle, { backgroundColor: 'rgba(94, 92, 230, 0.18)' }]}>
+                <Ionicons name="cloud-download" size={18} color="#5E5CE6" />
               </View>
+              <View style={styles.rowInfo}>
+                <Text style={styles.rowTitle}>Restore Backup</Text>
+                <Text style={styles.rowSub}>Restore JSON archive to local storage</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* Skills & Interests */}
-        <View style={styles.sectionCard}>
-          <Text style={styles.sectionTitle}>Verified Technical Skills</Text>
-          <View style={styles.tagsContainer}>
-            {studentProfile.skills.map((s, idx) => (
-              <View key={idx} style={styles.skillTag}>
-                <Text style={styles.skillTagText}>{s}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-
-        {/* Available For */}
-        <View style={styles.sectionCard}>
-          <Text style={styles.sectionTitle}>Available For Collaboration</Text>
-          <View style={styles.tagsContainer}>
-            {studentProfile.availableFor.map((item, idx) => (
-              <View key={idx} style={styles.availableTag}>
-                <Ionicons name="checkmark-circle-outline" size={14} color={colors.primary} style={{ marginRight: 4 }} />
-                <Text style={styles.availableTagText}>{item}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-
-        {/* Administrative Shortcut */}
-        <View style={styles.adminRow}>
-          <TouchableOpacity
-            style={styles.adminLink}
-            onPress={() => router.push('/admin')}
-          >
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <Ionicons name="shield-checkmark-outline" size={16} color={colors.primary} />
-              <Text style={styles.adminLinkText}>Open Moderator & Admin Panel &rarr;</Text>
+        {/* Skills & Interests Inset Group */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionHeader}>VERIFIED TECHNICAL SKILLS</Text>
+          <View style={styles.tagsCard}>
+            <View style={styles.tagsContainer}>
+              {studentProfile.skills.map((s, idx) => (
+                <View key={idx} style={styles.skillTag}>
+                  <Text style={styles.skillTagText}>{s}</Text>
+                </View>
+              ))}
             </View>
-          </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Available For Inset Group */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionHeader}>COLLABORATION SCOPE</Text>
+          <View style={styles.tagsCard}>
+            <View style={styles.tagsContainer}>
+              {studentProfile.availableFor.map((item, idx) => (
+                <View key={idx} style={styles.availableTag}>
+                  <Ionicons name="checkmark-circle" size={14} color={colors.primary} style={{ marginRight: 5 }} />
+                  <Text style={styles.availableTagText}>{item}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        </View>
+
+        {/* Administrative Shortcut Row */}
+        <View style={styles.sectionContainer}>
+          <View style={styles.groupedList}>
+            <TouchableOpacity
+              style={styles.groupedRow}
+              onPress={() => router.push('/admin')}
+            >
+              <View style={[styles.rowIconCircle, { backgroundColor: 'rgba(255, 69, 58, 0.18)' }]}>
+                <Ionicons name="shield-checkmark" size={18} color={colors.primary} />
+              </View>
+              <View style={styles.rowInfo}>
+                <Text style={styles.rowTitle}>Moderator & Admin Panel</Text>
+                <Text style={styles.rowSub}>Campus review tools & safety logs</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -230,48 +253,56 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.cardBorder,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.separator,
     backgroundColor: colors.bg,
     zIndex: 10,
     elevation: 4
   },
-  scrollView: {
-    flex: 1
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '900',
+  headerTitle: {
+    fontSize: 17,
+    fontWeight: '600',
     color: colors.textPrimary,
-    letterSpacing: -0.3
+    letterSpacing: -0.4
   },
   headerActions: {
     flexDirection: 'row',
     gap: 8
   },
   headerBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: colors.card,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.systemFill,
     justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+    alignItems: 'center'
+  },
+  scrollView: {
+    flex: 1
   },
   scrollContent: {
-    padding: 18,
-    paddingBottom: 110,
-    gap: 16
+    paddingBottom: 110
+  },
+  largeTitleSection: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8
+  },
+  largeTitle: {
+    fontSize: 34,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    letterSpacing: 0.37
   },
   profileCard: {
     backgroundColor: colors.card,
-    borderRadius: 18,
+    borderRadius: 16,
     padding: 20,
+    marginHorizontal: 16,
     alignItems: 'center',
-    borderWidth: 1.5,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.cardBorder
   },
   avatarRow: {
@@ -279,20 +310,20 @@ const styles = StyleSheet.create({
     marginBottom: 12
   },
   avatar: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    borderWidth: 3,
+    width: 84,
+    height: 84,
+    borderRadius: 42,
+    borderWidth: 2,
     borderColor: colors.primary
   },
   verifiedCheckBadge: {
     position: 'absolute',
-    bottom: 2,
-    right: 2,
+    bottom: 0,
+    right: 0,
     backgroundColor: colors.primary,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
@@ -300,8 +331,9 @@ const styles = StyleSheet.create({
   },
   fullName: {
     fontSize: 20,
-    fontWeight: '800',
-    color: colors.textPrimary
+    fontWeight: '700',
+    color: colors.textPrimary,
+    letterSpacing: -0.3
   },
   emailText: {
     fontSize: 13,
@@ -310,17 +342,13 @@ const styles = StyleSheet.create({
     marginTop: 2
   },
   deptText: {
-    fontSize: 13,
-    color: colors.textSecondary,
-    marginTop: 4
-  },
-  collegeText: {
     fontSize: 12,
-    color: colors.textMuted,
-    marginTop: 2
+    color: colors.textSecondary,
+    marginTop: 4,
+    textAlign: 'center'
   },
   mottoText: {
-    fontSize: 12,
+    fontSize: 13,
     fontStyle: 'italic',
     color: colors.textSecondary,
     marginTop: 10
@@ -329,8 +357,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 16,
     paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: colors.cardBorder,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.separator,
     width: '100%',
     justifyContent: 'space-around',
     alignItems: 'center'
@@ -340,119 +368,105 @@ const styles = StyleSheet.create({
   },
   statNum: {
     fontSize: 18,
-    fontWeight: '800',
+    fontWeight: '700',
     color: colors.textPrimary
   },
   statLabel: {
     fontSize: 11,
-    color: colors.textMuted,
+    color: colors.textSecondary,
     marginTop: 2
   },
   statDivider: {
-    width: 1,
-    height: 26,
-    backgroundColor: colors.cardBorder
+    width: StyleSheet.hairlineWidth,
+    height: 24,
+    backgroundColor: colors.separator
   },
-  sectionCard: {
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    padding: 18,
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+  sectionContainer: {
+    marginTop: 20,
+    paddingHorizontal: 16
   },
-  sectionTitle: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.textPrimary
-  },
-  sectionSubtitle: {
+  sectionHeader: {
     fontSize: 12,
-    color: colors.textMuted,
-    marginTop: 4,
-    marginBottom: 12,
-    lineHeight: 16
+    fontWeight: '600',
+    color: colors.textSecondary,
+    letterSpacing: 0.5,
+    marginBottom: 6,
+    marginLeft: 4
   },
-  buttonStack: {
-    gap: 10
+  groupedList: {
+    backgroundColor: colors.card,
+    borderRadius: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.cardBorder,
+    overflow: 'hidden'
   },
-  actionButton: {
+  groupedRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.tagBg,
-    borderRadius: 12,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+    paddingVertical: 12,
+    paddingHorizontal: 14
   },
-  pdfBtn: {
-    borderColor: 'rgba(255, 36, 50, 0.4)'
-  },
-  jsonBtn: {
-    borderColor: colors.cardBorder
-  },
-  restoreBtn: {
-    borderColor: colors.cardBorder
-  },
-  actionBtnIcon: {
+  rowIconCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginRight: 12
   },
-  actionBtnInfo: {
+  rowInfo: {
     flex: 1
   },
-  actionBtnTitle: {
+  rowTitle: {
     color: colors.textPrimary,
-    fontSize: 13,
-    fontWeight: '700'
+    fontSize: 15,
+    fontWeight: '600',
+    letterSpacing: -0.2
   },
-  actionBtnSub: {
+  rowSub: {
     color: colors.textSecondary,
     fontSize: 11,
-    marginTop: 2
+    marginTop: 1
+  },
+  rowSeparator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.separator,
+    marginLeft: 58
+  },
+  tagsCard: {
+    backgroundColor: colors.card,
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.cardBorder
   },
   tagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
-    marginTop: 10
+    gap: 8
   },
   skillTag: {
     backgroundColor: colors.tagBg,
     paddingVertical: 5,
     paddingHorizontal: 10,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+    borderRadius: 7
   },
   skillTagText: {
-    color: colors.textSecondary,
+    color: colors.textPrimary,
     fontSize: 12,
-    fontWeight: '600'
+    fontWeight: '500'
   },
   availableTag: {
     backgroundColor: colors.primaryMuted,
     paddingVertical: 5,
     paddingHorizontal: 10,
-    borderRadius: 6,
+    borderRadius: 7,
     flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 36, 50, 0.25)'
+    alignItems: 'center'
   },
   availableTagText: {
     color: colors.primary,
     fontSize: 12,
-    fontWeight: '700'
-  },
-  adminRow: {
-    alignItems: 'center',
-    paddingVertical: 8
-  },
-  adminLink: {
-    padding: 10
-  },
-  adminLinkText: {
-    color: colors.primary,
-    fontSize: 13,
-    fontWeight: '700'
+    fontWeight: '600'
   }
 });

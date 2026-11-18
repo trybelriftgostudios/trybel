@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../theme/colors';
 import { useFeedback } from '../../context/FeedbackContext';
+import { IOSSegmentedControl } from '../../components/IOSSegmentedControl';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const PHOTO_SIZE = (SCREEN_WIDTH - 48) / 2;
@@ -127,34 +128,9 @@ export default function FriendsScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
-      {/* Header */}
+      {/* Top Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Campus Friends & Photos</Text>
-        <Text style={styles.headerSubtitle}>Friends-only audience scoping & signed URLs</Text>
-
-        {/* Tab Switcher */}
-        <View style={styles.tabSwitcher}>
-          {(['friends', 'requests', 'photos'] as const).map((tab) => (
-            <TouchableOpacity
-              key={tab}
-              style={[styles.tabBtn, activeTab === tab && styles.tabBtnActive]}
-              onPress={() => setActiveTab(tab)}
-            >
-              <Text
-                style={[
-                  styles.tabBtnText,
-                  activeTab === tab && styles.tabBtnTextActive
-                ]}
-              >
-                {tab === 'friends'
-                  ? `Friends (${friends.length})`
-                  : tab === 'requests'
-                  ? `Requests (${requests.length})`
-                  : 'Shared Photos'}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+        <Text style={styles.headerTitle}>Friends & Photos</Text>
       </View>
 
       <ScrollView
@@ -162,65 +138,92 @@ export default function FriendsScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
+        {/* iOS Large Title */}
+        <View style={styles.largeTitleSection}>
+          <Text style={styles.largeTitle}>Friends</Text>
+        </View>
+
+        {/* iOS Segmented Switcher */}
+        <View style={styles.segmentedWrapper}>
+          <IOSSegmentedControl
+            values={['friends', 'requests', 'photos'] as const}
+            selectedIndex={activeTab === 'friends' ? 0 : activeTab === 'requests' ? 1 : 2}
+            onChange={(tab) => setActiveTab(tab)}
+            formatLabel={(tab) =>
+              tab === 'friends'
+                ? `Friends (${friends.length})`
+                : tab === 'requests'
+                ? `Requests (${requests.length})`
+                : 'Shared Photos'
+            }
+          />
+        </View>
+
         {/* FRIENDS LIST */}
         {activeTab === 'friends' && (
-          <View style={styles.friendsList}>
-            {friends.map((f) => (
-              <View key={f.id} style={styles.friendCard}>
-                <Image source={{ uri: f.avatar }} style={styles.friendAvatar} />
-                <View style={styles.friendInfo}>
-                  <Text style={styles.friendName}>{f.name}</Text>
-                  <Text style={styles.friendDept}>{f.department}</Text>
-                  <View style={styles.verifiedTag}>
-                    <Text style={styles.verifiedTagText}>✓ Verified Peer</Text>
+          <View style={styles.groupedList}>
+            {friends.map((f, idx) => (
+              <React.Fragment key={f.id}>
+                <View style={styles.friendRow}>
+                  <Image source={{ uri: f.avatar }} style={styles.friendAvatar} />
+                  <View style={styles.friendInfo}>
+                    <Text style={styles.friendName}>{f.name}</Text>
+                    <Text style={styles.friendDept}>{f.department}</Text>
+                    <View style={styles.verifiedTag}>
+                      <Text style={styles.verifiedTagText}>✓ Verified Peer</Text>
+                    </View>
                   </View>
-                </View>
 
-                <TouchableOpacity
-                  style={styles.unfriendBtn}
-                  onPress={() => handleUnfriend(f.id, f.name)}
-                >
-                  <Text style={styles.unfriendBtnText}>Unfriend</Text>
-                </TouchableOpacity>
-              </View>
+                  <TouchableOpacity
+                    style={styles.unfriendBtn}
+                    onPress={() => handleUnfriend(f.id, f.name)}
+                  >
+                    <Text style={styles.unfriendBtnText}>Unfriend</Text>
+                  </TouchableOpacity>
+                </View>
+                {idx < friends.length - 1 && <View style={styles.rowSeparator} />}
+              </React.Fragment>
             ))}
           </View>
         )}
 
         {/* REQUESTS LIST */}
         {activeTab === 'requests' && (
-          <View style={styles.friendsList}>
+          <View style={styles.groupedList}>
             {requests.length === 0 ? (
               <View style={styles.emptyBox}>
-                <Ionicons name="mail-unread-outline" size={36} color={colors.textMuted} style={styles.emptyIcon} />
+                <Ionicons name="mail-unread-outline" size={36} color={colors.textSecondary} style={styles.emptyIcon} />
                 <Text style={styles.emptyTitle}>No Pending Requests</Text>
                 <Text style={styles.emptySub}>You are all caught up with your campus invitations.</Text>
               </View>
             ) : (
-              requests.map((r) => (
-                <View key={r.id} style={styles.requestCard}>
-                  <Image source={{ uri: r.avatar }} style={styles.friendAvatar} />
-                  <View style={styles.friendInfo}>
-                    <Text style={styles.friendName}>{r.name}</Text>
-                    <Text style={styles.friendDept}>{r.dept}</Text>
-                  </View>
+              requests.map((r, idx) => (
+                <React.Fragment key={r.id}>
+                  <View style={styles.requestRow}>
+                    <Image source={{ uri: r.avatar }} style={styles.friendAvatar} />
+                    <View style={styles.friendInfo}>
+                      <Text style={styles.friendName}>{r.name}</Text>
+                      <Text style={styles.friendDept}>{r.dept}</Text>
+                    </View>
 
-                  <View style={styles.requestActions}>
-                    <TouchableOpacity
-                      style={styles.acceptBtn}
-                      onPress={() => handleAcceptRequest(r.id, r.name)}
-                    >
-                      <Text style={styles.acceptBtnText}>Confirm</Text>
-                    </TouchableOpacity>
+                    <View style={styles.requestActions}>
+                      <TouchableOpacity
+                        style={styles.acceptBtn}
+                        onPress={() => handleAcceptRequest(r.id, r.name)}
+                      >
+                        <Text style={styles.acceptBtnText}>Confirm</Text>
+                      </TouchableOpacity>
 
-                    <TouchableOpacity
-                      style={styles.declineBtn}
-                      onPress={() => handleDeclineRequest(r.id)}
-                    >
-                      <Ionicons name="close" size={16} color={colors.textSecondary} />
-                    </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.declineBtn}
+                        onPress={() => handleDeclineRequest(r.id)}
+                      >
+                        <Ionicons name="close" size={16} color={colors.textSecondary} />
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                </View>
+                  {idx < requests.length - 1 && <View style={styles.rowSeparator} />}
+                </React.Fragment>
               ))
             )}
           </View>
@@ -230,7 +233,7 @@ export default function FriendsScreen() {
         {activeTab === 'photos' && (
           <View style={styles.photosGrid}>
             <View style={styles.privacyBanner}>
-              <Ionicons name="lock-closed" size={16} color={colors.primary} />
+              <Ionicons name="lock-closed" size={15} color={colors.primary} />
               <Text style={styles.privacyText}>
                 Photos are visible only to accepted friends via 15-min expiring signed URLs.
               </Text>
@@ -266,85 +269,70 @@ const styles = StyleSheet.create({
     overflow: 'hidden'
   },
   header: {
-    paddingHorizontal: 18,
+    paddingHorizontal: 16,
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.cardBorder,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.separator,
     backgroundColor: colors.bg,
+    alignItems: 'center',
     zIndex: 10,
     elevation: 4
+  },
+  headerTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: colors.textPrimary,
+    letterSpacing: -0.4
   },
   scrollView: {
     flex: 1
   },
-  title: {
-    fontSize: 22,
-    fontWeight: '900',
+  largeTitleSection: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8
+  },
+  largeTitle: {
+    fontSize: 34,
+    fontWeight: '700',
     color: colors.textPrimary,
-    letterSpacing: -0.3
+    letterSpacing: 0.37
   },
-  headerSubtitle: {
-    fontSize: 12,
-    color: colors.textMuted,
-    marginTop: 2,
-    marginBottom: 10
-  },
-  tabSwitcher: {
-    flexDirection: 'row',
-    gap: 8
-  },
-  tabBtn: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.cardBorder
-  },
-  tabBtnActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary
-  },
-  tabBtnText: {
-    color: colors.textMuted,
-    fontSize: 12,
-    fontWeight: '600'
-  },
-  tabBtnTextActive: {
-    color: colors.white,
-    fontWeight: '800'
+  segmentedWrapper: {
+    paddingHorizontal: 16,
+    marginTop: 6,
+    marginBottom: 16
   },
   scrollContent: {
-    padding: 18,
     paddingBottom: 110
   },
-  friendsList: {
-    gap: 12
-  },
-  friendCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  groupedList: {
+    marginHorizontal: 16,
     backgroundColor: colors.card,
     borderRadius: 14,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.cardBorder,
+    overflow: 'hidden'
+  },
+  friendRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 14
   },
   friendAvatar: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    marginRight: 12,
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+    marginRight: 12
   },
   friendInfo: {
     flex: 1
   },
   friendName: {
     color: colors.textPrimary,
-    fontSize: 15,
-    fontWeight: '700'
+    fontSize: 16,
+    fontWeight: '600',
+    letterSpacing: -0.2
   },
   friendDept: {
     color: colors.textSecondary,
@@ -357,9 +345,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     paddingHorizontal: 6,
     borderRadius: 4,
-    marginTop: 4,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 36, 50, 0.25)'
+    marginTop: 4
   },
   verifiedTagText: {
     color: colors.primary,
@@ -370,23 +356,17 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 8,
-    backgroundColor: colors.tagBg,
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+    backgroundColor: colors.systemFill
   },
   unfriendBtnText: {
     color: colors.danger,
     fontSize: 12,
     fontWeight: '600'
   },
-  requestCard: {
+  requestRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.card,
-    borderRadius: 14,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+    padding: 14
   },
   requestActions: {
     flexDirection: 'row',
@@ -395,28 +375,32 @@ const styles = StyleSheet.create({
   },
   acceptBtn: {
     backgroundColor: colors.primary,
-    paddingVertical: 8,
+    paddingVertical: 6,
     paddingHorizontal: 14,
-    borderRadius: 8
+    borderRadius: 14
   },
   acceptBtnText: {
     color: colors.white,
     fontSize: 12,
-    fontWeight: '800'
+    fontWeight: '700'
   },
   declineBtn: {
-    backgroundColor: colors.tagBg,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    backgroundColor: colors.systemFill,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+    alignItems: 'center'
+  },
+  rowSeparator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.separator,
+    marginLeft: 74
   },
   emptyBox: {
     alignItems: 'center',
-    paddingVertical: 40
+    paddingVertical: 40,
+    paddingHorizontal: 20
   },
   emptyIcon: {
     marginBottom: 8
@@ -424,31 +408,32 @@ const styles = StyleSheet.create({
   emptyTitle: {
     color: colors.textPrimary,
     fontSize: 16,
-    fontWeight: '700'
+    fontWeight: '600'
   },
   emptySub: {
-    color: colors.textMuted,
-    fontSize: 12,
-    marginTop: 4
+    color: colors.textSecondary,
+    fontSize: 13,
+    marginTop: 4,
+    textAlign: 'center'
   },
   photosGrid: {
-    width: '100%'
+    paddingHorizontal: 16
   },
   privacyBanner: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.card,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.cardBorder,
     borderRadius: 10,
-    padding: 10,
+    padding: 12,
     marginBottom: 16,
     gap: 8
   },
   privacyText: {
     color: colors.textSecondary,
-    fontSize: 11,
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: '500',
     flex: 1
   },
   gridRow: {
@@ -462,7 +447,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderRadius: 12,
     overflow: 'hidden',
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.cardBorder,
     marginBottom: 12
   },
@@ -476,7 +461,7 @@ const styles = StyleSheet.create({
   photoCaption: {
     color: colors.textPrimary,
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 16
   },
   photoMetaRow: {
@@ -490,7 +475,7 @@ const styles = StyleSheet.create({
     fontWeight: '700'
   },
   photoTime: {
-    color: colors.textMuted,
+    color: colors.textSecondary,
     fontSize: 10
   }
 });

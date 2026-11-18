@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { StyleSheet, Platform, View } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,7 +11,7 @@ export default function TabsLayout() {
   
   // Safe bottom padding that adapts to Android 3-button navigation, gesture bars, and iOS Home indicators
   const bottomPadding = Math.max(Platform.OS === 'android' ? 12 : 8, insets.bottom);
-  const tabHeight = 56 + bottomPadding;
+  const tabHeight = 52 + bottomPadding;
 
   return (
     <Tabs
@@ -19,22 +19,25 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarHideOnKeyboard: true,
         tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textMuted,
-        tabBarBackground: () =>
+        tabBarInactiveTintColor: colors.textSecondary,
+        tabBarBackground: () => (
           Platform.OS === 'ios' ? (
-            <BlurView tint="systemChromeMaterialDark" intensity={85} style={StyleSheet.absoluteFill} />
-          ) : (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(8, 8, 10, 0.96)' }]} />
-          ),
+            <BlurView intensity={80} tint="dark" style={StyleSheet.absoluteFill} />
+          ) : undefined
+        ),
         tabBarStyle: {
           position: 'absolute',
-          backgroundColor: Platform.OS === 'ios' ? 'transparent' : 'rgba(8, 8, 10, 0.96)',
-          borderTopColor: 'rgba(255, 255, 255, 0.08)',
+          backgroundColor: Platform.OS === 'ios' ? 'transparent' : 'rgba(10, 10, 12, 0.92)',
+          borderTopColor: colors.separator,
           borderTopWidth: StyleSheet.hairlineWidth,
           height: tabHeight,
           paddingBottom: bottomPadding,
           paddingTop: 6,
-          elevation: 16
+          elevation: 8,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.3,
+          shadowRadius: 8
         },
         tabBarItemStyle: {
           paddingVertical: 2
@@ -114,7 +117,8 @@ export default function TabsLayout() {
 const styles = StyleSheet.create({
   tabLabel: {
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: '500',
+    letterSpacing: -0.2,
     marginTop: 1
   }
 });

@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../theme/colors';
 import { useFeedback } from '../../context/FeedbackContext';
+import { IOSSegmentedControl } from '../../components/IOSSegmentedControl';
 
 interface Thread {
   id: string;
@@ -125,79 +126,78 @@ export default function ChatScreen() {
     <SafeAreaView style={styles.safeArea} edges={['top']}>
       {/* Top Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Campus Messages</Text>
-        <Text style={styles.headerSubtitle}>Scoped threads (Teams • Clubs • Study • DMs)</Text>
-
-        {/* Filter Switcher */}
-        <View style={styles.filterRow}>
-          {(['all', 'friends', 'groups'] as const).map((filter) => (
-            <TouchableOpacity
-              key={filter}
-              style={[styles.filterChip, activeFilter === filter && styles.filterChipActive]}
-              onPress={() => setActiveFilter(filter)}
-            >
-              <Text
-                style={[
-                  styles.filterText,
-                  activeFilter === filter && styles.filterTextActive
-                ]}
-              >
-                {filter === 'all' ? 'All Threads' : filter === 'friends' ? 'Friends' : 'Groups & Teams'}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+        <Text style={styles.headerTitle}>Messages</Text>
       </View>
 
-      {/* Threads List */}
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
       >
-        {filteredThreads.map((thread) => (
-          <TouchableOpacity
-            key={thread.id}
-            style={styles.threadCard}
-            onPress={() => setSelectedThread(thread)}
-            activeOpacity={0.8}
-          >
-            <Image source={{ uri: thread.avatar }} style={styles.threadAvatar} />
-            <View style={styles.threadInfo}>
-              <View style={styles.threadTitleRow}>
-                <Text style={styles.threadTitle} numberOfLines={1}>
-                  {thread.title}
-                </Text>
-                <Text style={styles.threadTime}>{thread.time}</Text>
-              </View>
+        {/* iOS Large Title */}
+        <View style={styles.largeTitleSection}>
+          <Text style={styles.largeTitle}>Messages</Text>
+        </View>
 
-              <Text style={styles.lastMessage} numberOfLines={1}>
-                {thread.lastMessage}
-              </Text>
+        {/* iOS Segmented Filter */}
+        <View style={styles.segmentedWrapper}>
+          <IOSSegmentedControl
+            values={['all', 'friends', 'groups'] as const}
+            selectedIndex={activeFilter === 'all' ? 0 : activeFilter === 'friends' ? 1 : 2}
+            onChange={(filter) => setActiveFilter(filter)}
+            formatLabel={(val) => (val === 'all' ? 'All' : val === 'friends' ? 'Direct Messages' : 'Groups')}
+          />
+        </View>
 
-              <View style={styles.badgeRow}>
-                <View
-                  style={[
-                    styles.scopeTag,
-                    thread.type === 'team'
-                      ? styles.tagTeam
-                      : thread.type === 'friend_dm'
-                      ? styles.tagFriend
-                      : styles.tagStudy
-                  ]}
-                >
-                  <Text style={styles.scopeTagText}>{thread.scopeBadge}</Text>
-                </View>
-
-                {thread.unreadCount > 0 && (
-                  <View style={styles.unreadBadge}>
-                    <Text style={styles.unreadCountText}>{thread.unreadCount}</Text>
+        {/* Grouped Threads List */}
+        <View style={styles.groupedContainer}>
+          {filteredThreads.map((thread, idx) => (
+            <React.Fragment key={thread.id}>
+              <TouchableOpacity
+                style={styles.threadRow}
+                onPress={() => setSelectedThread(thread)}
+                activeOpacity={0.7}
+              >
+                <Image source={{ uri: thread.avatar }} style={styles.threadAvatar} />
+                <View style={styles.threadInfo}>
+                  <View style={styles.threadTitleRow}>
+                    <Text style={styles.threadTitle} numberOfLines={1}>
+                      {thread.title}
+                    </Text>
+                    <Text style={styles.threadTime}>{thread.time}</Text>
                   </View>
-                )}
-              </View>
-            </View>
-          </TouchableOpacity>
-        ))}
+
+                  <Text style={styles.lastMessage} numberOfLines={2}>
+                    {thread.lastMessage}
+                  </Text>
+
+                  <View style={styles.badgeRow}>
+                    <View
+                      style={[
+                        styles.scopeTag,
+                        thread.type === 'team'
+                          ? styles.tagTeam
+                          : thread.type === 'friend_dm'
+                          ? styles.tagFriend
+                          : styles.tagStudy
+                      ]}
+                    >
+                      <Text style={styles.scopeTagText}>{thread.scopeBadge}</Text>
+                    </View>
+
+                    {thread.unreadCount > 0 && (
+                      <View style={styles.unreadBadge}>
+                        <Text style={styles.unreadCountText}>{thread.unreadCount}</Text>
+                      </View>
+                    )}
+                  </View>
+                </View>
+                <Ionicons name="chevron-forward" size={15} color={colors.textMuted} style={{ marginLeft: 6 }} />
+              </TouchableOpacity>
+              {idx < filteredThreads.length - 1 && <View style={styles.rowSeparator} />}
+            </React.Fragment>
+          ))}
+        </View>
       </ScrollView>
 
       {/* Active Conversation Modal */}
@@ -215,7 +215,7 @@ export default function ChatScreen() {
                 onPress={() => setSelectedThread(null)}
                 style={styles.closeBtn}
               >
-                <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+                <Ionicons name="chevron-back" size={24} color={colors.primary} />
               </TouchableOpacity>
               <Image source={{ uri: selectedThread.avatar }} style={styles.modalAvatar} />
               <View style={{ flex: 1 }}>
@@ -256,8 +256,8 @@ export default function ChatScreen() {
             <View style={styles.inputBar}>
               <TextInput
                 style={styles.textInput}
-                placeholder="Type a message (moderated)..."
-                placeholderTextColor={colors.textMuted}
+                placeholder="iMessage (moderated)..."
+                placeholderTextColor={colors.textSecondary}
                 value={chatInput}
                 onChangeText={setChatInput}
               />
@@ -265,7 +265,7 @@ export default function ChatScreen() {
                 style={styles.sendBtn}
                 onPress={handleSendMessage}
               >
-                <Ionicons name="send" size={16} color={colors.white} />
+                <Ionicons name="arrow-up" size={17} color={colors.white} />
               </TouchableOpacity>
             </View>
           </View>
@@ -282,75 +282,61 @@ const styles = StyleSheet.create({
     overflow: 'hidden'
   },
   header: {
-    paddingHorizontal: 18,
+    paddingHorizontal: 16,
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.cardBorder,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.separator,
     backgroundColor: colors.bg,
+    alignItems: 'center',
     zIndex: 10,
     elevation: 4
+  },
+  headerTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: colors.textPrimary,
+    letterSpacing: -0.4
   },
   scrollView: {
     flex: 1
   },
-  title: {
-    fontSize: 22,
-    fontWeight: '900',
+  largeTitleSection: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8
+  },
+  largeTitle: {
+    fontSize: 34,
+    fontWeight: '700',
     color: colors.textPrimary,
-    letterSpacing: -0.3
+    letterSpacing: 0.37
   },
-  headerSubtitle: {
-    fontSize: 12,
-    color: colors.textMuted,
-    marginTop: 2,
-    marginBottom: 10
-  },
-  filterRow: {
-    flexDirection: 'row',
-    gap: 8
-  },
-  filterChip: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.cardBorder
-  },
-  filterChipActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary
-  },
-  filterText: {
-    color: colors.textMuted,
-    fontSize: 12,
-    fontWeight: '600'
-  },
-  filterTextActive: {
-    color: colors.white,
-    fontWeight: '800'
+  segmentedWrapper: {
+    paddingHorizontal: 16,
+    marginTop: 6,
+    marginBottom: 16
   },
   listContent: {
-    padding: 18,
-    paddingBottom: 110,
-    gap: 12
+    paddingBottom: 110
   },
-  threadCard: {
-    flexDirection: 'row',
+  groupedContainer: {
+    marginHorizontal: 16,
     backgroundColor: colors.card,
     borderRadius: 14,
-    padding: 14,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.cardBorder,
+    overflow: 'hidden'
+  },
+  threadRow: {
+    flexDirection: 'row',
+    padding: 14,
     alignItems: 'center'
   },
   threadAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    marginRight: 12,
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 12
   },
   threadInfo: {
     flex: 1
@@ -361,20 +347,22 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   threadTitle: {
-    fontSize: 15,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: '600',
     color: colors.textPrimary,
     flex: 1,
-    marginRight: 8
+    marginRight: 8,
+    letterSpacing: -0.3
   },
   threadTime: {
-    fontSize: 11,
-    color: colors.textMuted
+    fontSize: 12,
+    color: colors.textSecondary
   },
   lastMessage: {
     fontSize: 13,
     color: colors.textSecondary,
-    marginTop: 4
+    marginTop: 2,
+    lineHeight: 18
   },
   badgeRow: {
     flexDirection: 'row',
@@ -388,19 +376,13 @@ const styles = StyleSheet.create({
     borderRadius: 4
   },
   tagTeam: {
-    backgroundColor: colors.primaryMuted,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 36, 50, 0.3)'
+    backgroundColor: colors.primaryMuted
   },
   tagFriend: {
-    backgroundColor: colors.tagBg,
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+    backgroundColor: colors.systemFill
   },
   tagStudy: {
-    backgroundColor: '#1E1E24',
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+    backgroundColor: 'rgba(94, 92, 230, 0.15)'
   },
   scopeTagText: {
     color: colors.primary,
@@ -415,8 +397,13 @@ const styles = StyleSheet.create({
   },
   unreadCountText: {
     color: colors.white,
-    fontSize: 10,
-    fontWeight: '800'
+    fontSize: 11,
+    fontWeight: '700'
+  },
+  rowSeparator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.separator,
+    marginLeft: 76
   },
   chatModalContainer: {
     flex: 1,
@@ -425,37 +412,38 @@ const styles = StyleSheet.create({
   chatModalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.cardBorder,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.separator,
     backgroundColor: colors.card
   },
   closeBtn: {
-    paddingRight: 14
+    paddingRight: 8
   },
   modalAvatar: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    marginRight: 10
   },
   modalTitle: {
     color: colors.textPrimary,
-    fontSize: 15,
-    fontWeight: '700'
+    fontSize: 16,
+    fontWeight: '600',
+    letterSpacing: -0.3
   },
   modalSub: {
-    color: colors.textMuted,
-    fontSize: 11
+    color: colors.textSecondary,
+    fontSize: 11,
+    marginTop: 1
   },
   messagesContainer: {
     flex: 1
   },
   messageBubbleWrapper: {
     marginBottom: 12,
-    maxWidth: '80%'
+    maxWidth: '78%'
   },
   bubbleWrapperMe: {
     alignSelf: 'flex-end'
@@ -464,13 +452,14 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start'
   },
   senderLabel: {
-    color: colors.textMuted,
+    color: colors.textSecondary,
     fontSize: 11,
-    fontWeight: '600',
-    marginBottom: 3
+    fontWeight: '500',
+    marginBottom: 3,
+    marginLeft: 4
   },
   messageBubble: {
-    borderRadius: 16,
+    borderRadius: 18,
     paddingVertical: 10,
     paddingHorizontal: 14
   },
@@ -478,52 +467,48 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary
   },
   bubbleOther: {
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+    backgroundColor: colors.cardElevated
   },
   messageText: {
     color: colors.textPrimary,
-    fontSize: 14,
-    lineHeight: 19
+    fontSize: 15,
+    lineHeight: 20
   },
   messageTextMe: {
-    color: colors.white,
-    fontWeight: '600'
+    color: colors.white
   },
   messageTimestamp: {
-    fontSize: 9,
-    color: colors.textMuted,
+    fontSize: 10,
+    color: colors.textSecondary,
     alignSelf: 'flex-end',
     marginTop: 4
   },
   messageTimestampMe: {
-    color: 'rgba(255, 255, 255, 0.75)'
+    color: 'rgba(255, 255, 255, 0.7)'
   },
   inputBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
-    borderTopWidth: 1,
-    borderTopColor: colors.cardBorder,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.separator,
     backgroundColor: colors.card
   },
   textInput: {
     flex: 1,
     backgroundColor: colors.inputBg,
-    borderWidth: 1,
-    borderColor: colors.inputBorder,
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    borderRadius: 18,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     color: colors.textPrimary,
-    fontSize: 14,
-    marginRight: 10
+    fontSize: 15,
+    marginRight: 8
   },
   sendBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center'

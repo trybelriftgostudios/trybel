@@ -4,6 +4,17 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSecurity } from '../context/SecurityContext';
 import { colors } from '../theme/colors';
 
+interface KeypadDigit {
+  digit: string;
+  letters?: string;
+}
+
+const KEYPAD_ROWS: KeypadDigit[][] = [
+  [{ digit: '1' }, { digit: '2', letters: 'A B C' }, { digit: '3', letters: 'D E F' }],
+  [{ digit: '4', letters: 'G H I' }, { digit: '5', letters: 'J K L' }, { digit: '6', letters: 'M N O' }],
+  [{ digit: '7', letters: 'P Q R S' }, { digit: '8', letters: 'T U V' }, { digit: '9', letters: 'W X Y Z' }],
+];
+
 export const AppLockOverlay: React.FC = () => {
   const { isLocked, unlockWithPin, unlockWithBiometrics, biometricsAvailable, biometricsType } = useSecurity();
   const [enteredPin, setEnteredPin] = useState('');
@@ -14,10 +25,11 @@ export const AppLockOverlay: React.FC = () => {
 
   const triggerShake = () => {
     Animated.sequence([
-      Animated.timing(shakeAnim, { toValue: 10, duration: 50, useNativeDriver: true }),
-      Animated.timing(shakeAnim, { toValue: -10, duration: 50, useNativeDriver: true }),
-      Animated.timing(shakeAnim, { toValue: 10, duration: 50, useNativeDriver: true }),
-      Animated.timing(shakeAnim, { toValue: 0, duration: 50, useNativeDriver: true })
+      Animated.timing(shakeAnim, { toValue: 12, duration: 45, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: -12, duration: 45, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: 10, duration: 45, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: -10, duration: 45, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: 0, duration: 45, useNativeDriver: true })
     ]).start();
   };
 
@@ -31,7 +43,7 @@ export const AppLockOverlay: React.FC = () => {
       const success = await unlockWithPin(nextPin);
       if (!success) {
         triggerShake();
-        setErrorMessage('Incorrect PIN. Please try again.');
+        setErrorMessage('Incorrect Passcode');
         setTimeout(() => setEnteredPin(''), 300);
       }
     }
@@ -47,12 +59,12 @@ export const AppLockOverlay: React.FC = () => {
   return (
     <View style={styles.overlay}>
       <View style={styles.content}>
-        <View style={styles.shieldIcon}>
-          <Ionicons name="lock-closed" size={30} color={colors.primary} />
+        <View style={styles.lockIconContainer}>
+          <Ionicons name="lock-closed" size={24} color="#FFFFFF" />
         </View>
 
-        <Text style={styles.title}>Trybel Campus Lock</Text>
-        <Text style={styles.subtitle}>Enter your 4-digit security PIN to access your verified college network</Text>
+        <Text style={styles.title}>Enter Passcode</Text>
+        <Text style={styles.subtitle}>Unlock Trybel to access your campus network</Text>
 
         {/* PIN Dots with Shake */}
         <Animated.View style={[styles.dotsRow, { transform: [{ translateX: shakeAnim }] }]}>
@@ -73,22 +85,19 @@ export const AppLockOverlay: React.FC = () => {
 
         {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
-        {/* Numeric Keypad */}
+        {/* Apple Style Numeric Keypad */}
         <View style={styles.keypad}>
-          {[
-            ['1', '2', '3'],
-            ['4', '5', '6'],
-            ['7', '8', '9']
-          ].map((row, rIdx) => (
+          {KEYPAD_ROWS.map((row, rIdx) => (
             <View key={rIdx} style={styles.keypadRow}>
-              {row.map((digit) => (
+              {row.map((item) => (
                 <TouchableOpacity
-                  key={digit}
+                  key={item.digit}
                   style={styles.keyButton}
-                  onPress={() => handlePressNumber(digit)}
-                  activeOpacity={0.7}
+                  onPress={() => handlePressNumber(item.digit)}
+                  activeOpacity={0.4}
                 >
-                  <Text style={styles.keyNumber}>{digit}</Text>
+                  <Text style={styles.keyNumber}>{item.digit}</Text>
+                  {item.letters ? <Text style={styles.keySubtext}>{item.letters}</Text> : null}
                 </TouchableOpacity>
               ))}
             </View>
@@ -98,14 +107,14 @@ export const AppLockOverlay: React.FC = () => {
           <View style={styles.keypadRow}>
             {biometricsAvailable && Platform.OS !== 'web' ? (
               <TouchableOpacity
-                style={[styles.keyButton, styles.bioButton]}
+                style={[styles.keyButton, styles.transparentButton]}
                 onPress={unlockWithBiometrics}
-                activeOpacity={0.7}
+                activeOpacity={0.4}
               >
                 <Ionicons
                   name={biometricsType === 'Face ID' ? 'scan' : 'finger-print'}
-                  size={24}
-                  color={colors.primary}
+                  size={28}
+                  color="#FFFFFF"
                 />
               </TouchableOpacity>
             ) : (
@@ -115,17 +124,17 @@ export const AppLockOverlay: React.FC = () => {
             <TouchableOpacity
               style={styles.keyButton}
               onPress={() => handlePressNumber('0')}
-              activeOpacity={0.7}
+              activeOpacity={0.4}
             >
               <Text style={styles.keyNumber}>0</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.keyButton, styles.delButton]}
+              style={[styles.keyButton, styles.transparentButton]}
               onPress={handleDelete}
-              activeOpacity={0.7}
+              activeOpacity={0.4}
             >
-              <Ionicons name="backspace-outline" size={22} color={colors.textSecondary} />
+              <Ionicons name="backspace-outline" size={26} color="#FFFFFF" />
             </TouchableOpacity>
           </View>
         </View>
@@ -141,68 +150,67 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: colors.bg,
+    backgroundColor: '#000000',
     zIndex: 999999,
     justifyContent: 'center',
     alignItems: 'center'
   },
   content: {
     width: '100%',
-    maxWidth: 380,
+    maxWidth: 360,
     alignItems: 'center',
-    paddingHorizontal: 24
+    paddingHorizontal: 20
   },
-  shieldIcon: {
-    width: 68,
-    height: 68,
-    borderRadius: 34,
-    backgroundColor: colors.card,
-    borderWidth: 1.5,
-    borderColor: colors.cardBorder,
+  lockIconContainer: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16
   },
   title: {
     fontSize: 22,
-    fontWeight: '800',
-    color: colors.textPrimary,
+    fontWeight: '600',
+    color: '#FFFFFF',
     letterSpacing: -0.3
   },
   subtitle: {
     fontSize: 13,
-    color: colors.textMuted,
+    color: 'rgba(235, 235, 245, 0.6)',
     textAlign: 'center',
-    marginTop: 8,
-    paddingHorizontal: 16,
+    marginTop: 6,
+    paddingHorizontal: 24,
     lineHeight: 18
   },
   dotsRow: {
     flexDirection: 'row',
-    marginVertical: 26,
-    gap: 16
+    marginTop: 28,
+    marginBottom: 24,
+    gap: 18
   },
   dot: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: colors.cardBorder,
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
     backgroundColor: 'transparent'
   },
   dotFilled: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary
+    backgroundColor: '#FFFFFF',
+    borderColor: '#FFFFFF'
   },
   dotError: {
-    borderColor: colors.danger,
-    backgroundColor: colors.danger
+    borderColor: '#FF453A',
+    backgroundColor: '#FF453A'
   },
   errorText: {
-    color: colors.dangerText,
-    fontSize: 13,
-    fontWeight: '600',
-    marginBottom: 10
+    color: '#FF453A',
+    fontSize: 14,
+    fontWeight: '500',
+    marginBottom: 12
   },
   keypad: {
     width: '100%',
@@ -212,32 +220,33 @@ const styles = StyleSheet.create({
   keypadRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 14
+    marginBottom: 16
   },
   keyButton: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: colors.card,
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
     justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.cardBorder
+    alignItems: 'center'
+  },
+  transparentButton: {
+    backgroundColor: 'transparent'
   },
   keyButtonEmpty: {
-    width: 72,
-    height: 72
+    width: 76,
+    height: 76
   },
   keyNumber: {
-    fontSize: 26,
-    fontWeight: '700',
-    color: colors.textPrimary
+    fontSize: 30,
+    fontWeight: '400',
+    color: '#FFFFFF'
   },
-  bioButton: {
-    backgroundColor: colors.card,
-    borderColor: colors.primaryMuted
-  },
-  delButton: {
-    backgroundColor: colors.card
+  keySubtext: {
+    fontSize: 9,
+    fontWeight: '600',
+    color: 'rgba(235, 235, 245, 0.6)',
+    letterSpacing: 1.5,
+    marginTop: 1
   }
 });
