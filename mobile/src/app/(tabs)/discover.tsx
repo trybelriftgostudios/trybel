@@ -6,14 +6,24 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  Image
+  Image,
+  Platform
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { colors } from '../../theme/colors';
 import { useFeedback } from '../../context/FeedbackContext';
 import { SwipeCardDeck } from '../../components/SwipeCardDeck';
+
+const triggerHaptic = (style: Haptics.ImpactFeedbackStyle = Haptics.ImpactFeedbackStyle.Light) => {
+  if (Platform.OS !== 'web') {
+    try {
+      Haptics.impactAsync(style);
+    } catch {}
+  }
+};
 
 export default function DiscoverScreen() {
   const router = useRouter();
@@ -86,7 +96,11 @@ export default function DiscoverScreen() {
                 styles.categoryChip,
                 activeCategory === cat && styles.categoryChipActive
               ]}
-              onPress={() => setActiveCategory(cat)}
+              activeOpacity={0.7}
+              onPress={() => {
+                triggerHaptic();
+                setActiveCategory(cat);
+              }}
             >
               <Text
                 style={[

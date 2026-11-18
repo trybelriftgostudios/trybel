@@ -6,16 +6,26 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  TextInput
+  TextInput,
+  Platform
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { colors } from '../../theme/colors';
 import { sqliteService, OfflinePost } from '../../services/sqlite.service';
 import { useFeedback } from '../../context/FeedbackContext';
 import { useSecurity } from '../../context/SecurityContext';
 import { PanCarousel } from '../../components/PanCarousel';
+
+const triggerHaptic = (style: Haptics.ImpactFeedbackStyle = Haptics.ImpactFeedbackStyle.Light) => {
+  if (Platform.OS !== 'web') {
+    try {
+      Haptics.impactAsync(style);
+    } catch {}
+  }
+};
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -26,6 +36,7 @@ export default function HomeScreen() {
   const [activeTab, setActiveTab] = useState<'for_you' | 'college' | 'following'>('for_you');
   const [newPostText, setNewPostText] = useState('');
   const [isPosting, setIsPosting] = useState(false);
+  const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
 
   const loadPosts = useCallback(async () => {
     try {
@@ -43,6 +54,7 @@ export default function HomeScreen() {
   const handleCreatePost = async () => {
     if (!newPostText.trim()) return;
     setIsPosting(true);
+    triggerHaptic(Haptics.ImpactFeedbackStyle.Medium);
     try {
       const newPost: OfflinePost = {
         id: `post_${Date.now()}`,
@@ -68,25 +80,107 @@ export default function HomeScreen() {
     }
   };
 
+  const toggleLike = (postId: string) => {
+    triggerHaptic(Haptics.ImpactFeedbackStyle.Medium);
+    setLikedPosts(prev => {
+      const isLiked = !prev[postId];
+      showFeedback(isLiked ? 'Liked post!' : 'Removed like', 'success');
+      return { ...prev, [postId]: isLiked };
+    });
+  };
+
+  const campusHubs = [
+    {
+      id: 'study',
+      title: 'Study',
+      subtitle: 'Partners',
+      icon: 'book-outline',
+      route: '/study-partners',
+      badgeText: 'SPEC',
+      accentColor: '#10B981',
+      ringColor: 'rgba(16, 185, 129, 0.45)'
+    },
+    {
+      id: 'teams',
+      title: 'Teams',
+      subtitle: 'SIH 2025',
+      icon: 'people-outline',
+      route: '/teams',
+      badgeText: 'HOT',
+      accentColor: colors.primary,
+      ringColor: 'rgba(255, 36, 50, 0.55)'
+    },
+    {
+      id: 'clubs',
+      title: 'Clubs',
+      subtitle: 'Events',
+      icon: 'flag-outline',
+      route: '/clubs',
+      badgeText: 'GDSC',
+      accentColor: '#F59E0B',
+      ringColor: 'rgba(245, 158, 11, 0.45)'
+    },
+    {
+      id: 'challenges',
+      title: 'Daily Quiz',
+      subtitle: 'Streak 3x',
+      icon: 'trophy-outline',
+      route: '/challenges',
+      badgeText: 'DAILY',
+      accentColor: '#A855F7',
+      ringColor: 'rgba(168, 85, 247, 0.45)'
+    },
+    {
+      id: 'chatbot',
+      title: 'Trybel AI',
+      subtitle: 'Assistant',
+      icon: 'sparkles',
+      route: '/chatbot',
+      badgeText: '24/7',
+      accentColor: '#06B6D4',
+      ringColor: 'rgba(6, 182, 212, 0.45)'
+    },
+    {
+      id: 'notifications',
+      title: 'Alerts',
+      subtitle: 'Reminders',
+      icon: 'notifications-outline',
+      route: '/notifications',
+      badgeText: 'NEW',
+      accentColor: '#38BDF8',
+      ringColor: 'rgba(56, 189, 248, 0.45)'
+    },
+    {
+      id: 'admin',
+      title: 'Mod Panel',
+      subtitle: 'Review',
+      icon: 'shield-checkmark-outline',
+      route: '/admin',
+      badgeText: null,
+      accentColor: '#F43F5E',
+      ringColor: 'rgba(244, 63, 94, 0.45)'
+    }
+  ];
+
   const highlightReels = [
     {
       id: '1',
       title: 'Smart India Hackathon 2025',
-      subtitle: 'Hardware & AI track teams forming now',
+      subtitle: 'Hardware & AI track teams forming now. Join cross-college squads.',
       badge: 'FEATURED HACKATHON',
       route: '/teams'
     },
     {
       id: '2',
       title: 'Full-Stack Development Sprint',
-      subtitle: 'GDSC hands-on session this Saturday',
+      subtitle: 'GDSC hands-on systems workshop this Saturday at SPEC Lab 3.',
       badge: 'CAMPUS CLUB EVENT',
       route: '/clubs'
     },
     {
       id: '3',
       title: 'Today’s Campus Knowledge Puzzle',
-      subtitle: 'Test your distributed systems and SQL skills',
+      subtitle: 'Test your distributed systems, concurrency, and SQL indexing skills.',
       badge: 'DAILY PUZZLE',
       route: '/challenges'
     }
@@ -94,138 +188,160 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
+      {/* Apple Translucent Frosted Header */}
+      <View style={styles.header}>
+        <View style={styles.logoRow}>
+          <View style={styles.brandLogoCircle}>
+            <Image
+              source={require('../../../assets/logo.png')}
+              style={styles.brandLogo}
+              resizeMode="contain"
+            />
+          </View>
+          <View>
+            <Text style={styles.brandTitle}>TRYBEL</Text>
+            <View style={styles.verifiedCampusTag}>
+              <Text style={styles.verifiedDot}>●</Text>
+              <Text style={styles.verifiedCampusText}>St. Peter's College</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.headerActions}>
+          {hasPin && (
+            <TouchableOpacity
+              style={styles.headerBtn}
+              onPress={() => {
+                triggerHaptic();
+                lockApp();
+              }}
+              accessibilityLabel="Lock App"
+            >
+              <Ionicons name="lock-closed-outline" size={17} color={colors.textPrimary} />
+            </TouchableOpacity>
+          )}
+
+          <TouchableOpacity
+            style={styles.headerBtn}
+            onPress={() => {
+              triggerHaptic();
+              router.push('/chatbot');
+            }}
+            accessibilityLabel="Campus AI Assistant"
+          >
+            <Ionicons name="sparkles" size={16} color={colors.primary} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.headerBtn}
+            onPress={() => {
+              triggerHaptic();
+              router.push('/notifications');
+            }}
+            accessibilityLabel="Notifications"
+          >
+            <Ionicons name="notifications-outline" size={18} color={colors.textPrimary} />
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
+        bounces={true}
       >
-        {/* Top Header - Scrolls away naturally with feed like Instagram */}
-        <View style={styles.header}>
-          <View style={styles.logoRow}>
-            <View style={styles.brandLogoCircle}>
-              <Image
-                source={require('../../../assets/logo.png')}
-                style={styles.brandLogo}
-                resizeMode="contain"
-              />
-            </View>
-            <Text style={styles.brandTitle}>TRYBEL</Text>
-            <View style={styles.verifiedCampusTag}>
-              <Text style={styles.verifiedDot}>●</Text>
-              <Text style={styles.verifiedCampusText}>St. Peter's</Text>
-            </View>
-          </View>
-
-          <View style={styles.headerActions}>
-            {hasPin && (
+        {/* Apple iOS Horizontal Scrolling Icons Hub Tray */}
+        <View style={styles.hubSection}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.hubScrollContent}
+            decelerationRate="normal"
+            bounces={true}
+          >
+            {campusHubs.map((hub) => (
               <TouchableOpacity
-                style={styles.headerBtn}
-                onPress={lockApp}
-                accessibilityLabel="Lock App"
+                key={hub.id}
+                style={styles.hubItem}
+                activeOpacity={0.72}
+                onPress={() => {
+                  triggerHaptic();
+                  router.push(hub.route as any);
+                }}
               >
-                <Ionicons name="lock-closed-outline" size={18} color={colors.textPrimary} />
+                <View style={[styles.hubIconPod, { borderColor: hub.ringColor }]}>
+                  <Ionicons name={hub.icon as any} size={24} color={hub.accentColor} />
+                  {hub.badgeText && (
+                    <View style={[styles.hubBadge, { backgroundColor: hub.accentColor }]}>
+                      <Text style={styles.hubBadgeText}>{hub.badgeText}</Text>
+                    </View>
+                  )}
+                </View>
+                <Text style={styles.hubItemTitle} numberOfLines={1}>{hub.title}</Text>
+                <Text style={styles.hubItemSubtitle} numberOfLines={1}>{hub.subtitle}</Text>
               </TouchableOpacity>
-            )}
-
-            <TouchableOpacity
-              style={styles.headerBtn}
-              onPress={() => router.push('/chatbot')}
-              accessibilityLabel="Campus AI Assistant"
-            >
-              <Ionicons name="sparkles" size={17} color={colors.primary} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.headerBtn}
-              onPress={() => router.push('/notifications')}
-              accessibilityLabel="Notifications"
-            >
-              <Ionicons name="notifications-outline" size={18} color={colors.textPrimary} />
-            </TouchableOpacity>
-          </View>
+            ))}
+          </ScrollView>
         </View>
 
-        {/* Hardware-Accelerated Pan Carousel Banner */}
+        {/* Apple App Store Style Highlights Reel Carousel */}
         <PanCarousel
           data={highlightReels}
           renderItem={(item) => (
             <TouchableOpacity
-              style={styles.bannerCard}
-              activeOpacity={0.88}
-              onPress={() => router.push(item.route as any)}
+              style={styles.appleBannerCard}
+              activeOpacity={0.9}
+              onPress={() => {
+                triggerHaptic();
+                router.push(item.route as any);
+              }}
             >
-              <View style={styles.bannerBadge}>
-                <Text style={styles.bannerBadgeText}>{item.badge}</Text>
+              <View style={styles.bannerTopRow}>
+                <View style={styles.bannerBadgePill}>
+                  <Text style={styles.bannerBadgeText}>{item.badge}</Text>
+                </View>
+                <Ionicons name="sparkles" size={13} color={colors.primary} />
               </View>
+
               <Text style={styles.bannerTitle}>{item.title}</Text>
               <Text style={styles.bannerSub}>{item.subtitle}</Text>
-              <View style={styles.bannerFooter}>
-                <Text style={styles.bannerCta}>Explore &rarr;</Text>
+
+              <View style={styles.bannerActionRow}>
+                <Text style={styles.bannerCtaText}>Explore</Text>
+                <View style={styles.bannerArrowCircle}>
+                  <Ionicons name="arrow-forward" size={12} color={colors.white} />
+                </View>
               </View>
             </TouchableOpacity>
           )}
         />
 
-        {/* Quick Action Chips */}
-        <View style={styles.quickActionsRow}>
-          <TouchableOpacity
-            style={styles.actionChip}
-            onPress={() => router.push('/study-partners')}
-          >
-            <Ionicons name="book-outline" size={20} color={colors.primary} style={styles.actionIcon} />
-            <Text style={styles.actionLabel}>Study Partners</Text>
-            <Text style={styles.actionSub}>College-Only</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.actionChip}
-            onPress={() => router.push('/teams')}
-          >
-            <Ionicons name="people-outline" size={20} color={colors.primary} style={styles.actionIcon} />
-            <Text style={styles.actionLabel}>Find Team</Text>
-            <Text style={styles.actionSub}>Dual Toggle</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.actionChip}
-            onPress={() => router.push('/clubs')}
-          >
-            <Ionicons name="flag-outline" size={20} color={colors.primary} style={styles.actionIcon} />
-            <Text style={styles.actionLabel}>Clubs & Events</Text>
-            <Text style={styles.actionSub}>With Feedback</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.actionChip}
-            onPress={() => router.push('/challenges')}
-          >
-            <Ionicons name="trophy-outline" size={20} color={colors.primary} style={styles.actionIcon} />
-            <Text style={styles.actionLabel}>Daily Puzzle</Text>
-            <Text style={styles.actionSub}>Leaderboard</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Feed Tab Switcher */}
-        <View style={styles.tabSwitcher}>
-          {(['for_you', 'college', 'following'] as const).map((tab) => (
-            <TouchableOpacity
-              key={tab}
-              style={[styles.feedTab, activeTab === tab && styles.feedTabActive]}
-              onPress={() => setActiveTab(tab)}
-            >
-              <Text
-                style={[
-                  styles.feedTabText,
-                  activeTab === tab && styles.feedTabTextActive
-                ]}
+        {/* Apple iOS Native Segmented Pill Control */}
+        <View style={styles.segmentedControl}>
+          {(['for_you', 'college', 'following'] as const).map((tab) => {
+            const isActive = activeTab === tab;
+            const label = tab === 'for_you' ? 'For You' : tab === 'college' ? "St. Peter’s" : 'Following';
+            return (
+              <TouchableOpacity
+                key={tab}
+                style={[styles.segmentBtn, isActive && styles.segmentBtnActive]}
+                activeOpacity={0.82}
+                onPress={() => {
+                  triggerHaptic();
+                  setActiveTab(tab);
+                }}
               >
-                {tab === 'for_you' ? 'For You' : tab === 'college' ? 'St. Peter’s' : 'Following'}
-              </Text>
-            </TouchableOpacity>
-          ))}
+                {isActive && <View style={styles.activeDot} />}
+                <Text style={[styles.segmentText, isActive && styles.segmentTextActive]}>
+                  {label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
-        {/* Create Post Input */}
+        {/* Apple-style Create Post Bar */}
         <View style={styles.createPostBox}>
           <View style={styles.createPostRow}>
             <Image
@@ -234,7 +350,7 @@ export default function HomeScreen() {
             />
             <TextInput
               style={styles.createInput}
-              placeholder="What's happening on campus?"
+              placeholder="Share what's happening on campus..."
               placeholderTextColor={colors.textMuted}
               value={newPostText}
               onChangeText={setNewPostText}
@@ -248,19 +364,23 @@ export default function HomeScreen() {
                 onPress={handleCreatePost}
                 disabled={isPosting}
               >
-                <Text style={styles.postBtnText}>{isPosting ? 'Posting...' : 'Share'}</Text>
+                <Ionicons name="arrow-up" size={16} color={colors.white} style={{ marginRight: 4 }} />
+                <Text style={styles.postBtnText}>{isPosting ? 'Posting...' : 'Post'}</Text>
               </TouchableOpacity>
             </View>
           )}
         </View>
 
-        {/* Offline-First Posts List */}
+        {/* Posts List */}
         <View style={styles.postsList}>
           {posts.map((post) => {
             let tags: string[] = [];
             try {
               tags = JSON.parse(post.tags_json || '[]');
             } catch {}
+
+            const isLiked = likedPosts[post.id];
+            const displayLikes = (post.likes_count || 0) + (isLiked ? 1 : 0);
 
             return (
               <View key={post.id} style={styles.postCard}>
@@ -301,23 +421,38 @@ export default function HomeScreen() {
                 <View style={styles.postFooter}>
                   <TouchableOpacity
                     style={styles.postAction}
-                    onPress={() => showFeedback('Liked post!', 'success')}
+                    onPress={() => toggleLike(post.id)}
+                    activeOpacity={0.7}
                   >
-                    <Ionicons name="heart-outline" size={17} color={colors.primary} />
-                    <Text style={styles.postActionCount}>{post.likes_count}</Text>
+                    <Ionicons
+                      name={isLiked ? 'heart' : 'heart-outline'}
+                      size={18}
+                      color={isLiked ? colors.primary : colors.textSecondary}
+                    />
+                    <Text style={[styles.postActionCount, isLiked && { color: colors.primary }]}>
+                      {displayLikes}
+                    </Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     style={styles.postAction}
-                    onPress={() => router.push('/chat')}
+                    onPress={() => {
+                      triggerHaptic();
+                      router.push('/chat');
+                    }}
+                    activeOpacity={0.7}
                   >
-                    <Ionicons name="chatbubble-outline" size={16} color={colors.textSecondary} />
+                    <Ionicons name="chatbubble-outline" size={17} color={colors.textSecondary} />
                     <Text style={styles.postActionCount}>{post.comments_count}</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     style={styles.postAction}
-                    onPress={() => router.push('/report')}
+                    onPress={() => {
+                      triggerHaptic();
+                      router.push('/report');
+                    }}
+                    activeOpacity={0.7}
                   >
                     <Ionicons name="flag-outline" size={16} color={colors.textMuted} />
                     <Text style={styles.postActionText}>Report</Text>
@@ -343,11 +478,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 18,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.cardBorder,
-    backgroundColor: colors.bg,
-    marginBottom: 6
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: 'rgba(8, 8, 10, 0.94)',
+    zIndex: 10,
+    elevation: 4
   },
   logoRow: {
     flexDirection: 'row',
@@ -360,55 +496,50 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     backgroundColor: colors.card,
     borderWidth: 1.5,
-    borderColor: colors.cardBorder,
+    borderColor: 'rgba(255, 36, 50, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden'
   },
   brandLogo: {
-    width: 34,
-    height: 34,
-    borderRadius: 17
+    width: 32,
+    height: 32,
+    borderRadius: 16
   },
   brandTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '900',
     color: colors.textPrimary,
-    letterSpacing: 1.2
+    letterSpacing: 1.4
   },
   verifiedCampusTag: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.cardBorder,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 12,
-    gap: 5
+    gap: 4,
+    marginTop: 1
   },
   verifiedDot: {
     color: colors.primary,
-    fontSize: 9
+    fontSize: 7
   },
   verifiedCampusText: {
     color: colors.textSecondary,
-    fontSize: 11,
-    fontWeight: '700'
+    fontSize: 10,
+    fontWeight: '600'
   },
   headerActions: {
     flexDirection: 'row',
     gap: 8
   },
   headerBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: colors.card,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: colors.cardBorder
+    borderColor: 'rgba(255, 255, 255, 0.08)'
   },
   scrollView: {
     flex: 1
@@ -416,23 +547,77 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 110
   },
-  bannerCard: {
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    padding: 18,
+  hubSection: {
+    paddingTop: 14,
+    paddingBottom: 4
+  },
+  hubScrollContent: {
+    paddingHorizontal: 16,
+    gap: 14
+  },
+  hubItem: {
+    alignItems: 'center',
+    width: 68
+  },
+  hubIconPod: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
     borderWidth: 1.5,
-    borderColor: colors.cardBorder,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    marginBottom: 6
+  },
+  hubBadge: {
+    position: 'absolute',
+    top: -3,
+    right: -4,
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+    borderRadius: 6
+  },
+  hubBadgeText: {
+    color: colors.white,
+    fontSize: 8,
+    fontWeight: '900',
+    letterSpacing: 0.3
+  },
+  hubItemTitle: {
+    color: colors.textPrimary,
+    fontSize: 11,
+    fontWeight: '700',
+    textAlign: 'center'
+  },
+  hubItemSubtitle: {
+    color: colors.textMuted,
+    fontSize: 9,
+    fontWeight: '500',
+    marginTop: 1,
+    textAlign: 'center'
+  },
+  appleBannerCard: {
+    backgroundColor: '#121216',
+    borderRadius: 20,
+    padding: 18,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
     width: '100%'
   },
-  bannerBadge: {
-    backgroundColor: colors.primaryMuted,
-    alignSelf: 'flex-start',
+  bannerTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10
+  },
+  bannerBadgePill: {
+    backgroundColor: 'rgba(255, 36, 50, 0.14)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 36, 50, 0.3)',
     paddingVertical: 3,
     paddingHorizontal: 8,
-    borderRadius: 6,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 36, 50, 0.3)'
+    borderRadius: 8
   },
   bannerBadgeText: {
     color: colors.primary,
@@ -441,99 +626,96 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5
   },
   bannerTitle: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '800',
     color: colors.textPrimary,
     letterSpacing: -0.3
   },
   bannerSub: {
-    fontSize: 13,
+    fontSize: 12,
     color: colors.textSecondary,
-    marginTop: 4
+    marginTop: 4,
+    lineHeight: 17
   },
-  bannerFooter: {
+  bannerActionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
     marginTop: 14,
-    alignItems: 'flex-end'
+    gap: 6
   },
-  bannerCta: {
-    color: colors.primary,
-    fontSize: 13,
+  bannerCtaText: {
+    color: colors.white,
+    fontSize: 12,
     fontWeight: '700'
   },
-  quickActionsRow: {
-    flexDirection: 'row',
-    paddingHorizontal: 18,
-    gap: 10,
-    marginTop: 10,
-    marginBottom: 16
+  bannerArrowCircle: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
-  actionChip: {
-    flex: 1,
-    backgroundColor: colors.card,
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 6,
-    alignItems: 'center',
+  segmentedControl: {
+    flexDirection: 'row',
+    backgroundColor: '#141418',
+    borderRadius: 14,
+    padding: 3,
+    marginHorizontal: 16,
+    marginVertical: 12,
     borderWidth: 1,
-    borderColor: colors.cardBorder
+    borderColor: 'rgba(255, 255, 255, 0.06)'
   },
-  actionIcon: {
-    marginBottom: 6
-  },
-  actionLabel: {
-    color: colors.textPrimary,
-    fontSize: 11,
-    fontWeight: '700',
-    textAlign: 'center'
-  },
-  actionSub: {
-    color: colors.textMuted,
-    fontSize: 9,
-    fontWeight: '600',
-    marginTop: 2
-  },
-  tabSwitcher: {
+  segmentBtn: {
+    flex: 1,
     flexDirection: 'row',
-    paddingHorizontal: 18,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.cardBorder,
-    marginBottom: 14
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    borderRadius: 11,
+    gap: 5
   },
-  feedTab: {
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent'
+  segmentBtnActive: {
+    backgroundColor: '#24242B',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 2
   },
-  feedTabActive: {
-    borderBottomColor: colors.primary
+  activeDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    backgroundColor: colors.primary
   },
-  feedTabText: {
+  segmentText: {
     color: colors.textMuted,
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '600'
   },
-  feedTabTextActive: {
-    color: colors.textPrimary,
+  segmentTextActive: {
+    color: colors.white,
     fontWeight: '800'
   },
   createPostBox: {
-    backgroundColor: colors.card,
-    marginHorizontal: 18,
-    borderRadius: 14,
+    backgroundColor: '#121216',
+    marginHorizontal: 16,
+    borderRadius: 16,
     padding: 14,
     borderWidth: 1,
-    borderColor: colors.cardBorder,
-    marginBottom: 18
+    borderColor: 'rgba(255, 255, 255, 0.06)',
+    marginBottom: 16
   },
   createPostRow: {
     flexDirection: 'row',
     gap: 12
   },
   myAvatar: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     borderWidth: 1,
     borderColor: colors.cardBorder
   },
@@ -547,15 +729,17 @@ const styles = StyleSheet.create({
   postSubmitRow: {
     alignItems: 'flex-end',
     marginTop: 10,
-    borderTopWidth: 1,
-    borderTopColor: colors.cardBorder,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: 'rgba(255, 255, 255, 0.08)',
     paddingTop: 8
   },
   postBtn: {
     backgroundColor: colors.primary,
     paddingVertical: 6,
-    paddingHorizontal: 16,
-    borderRadius: 8
+    paddingHorizontal: 14,
+    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   postBtnDisabled: {
     opacity: 0.5
@@ -563,18 +747,18 @@ const styles = StyleSheet.create({
   postBtnText: {
     color: colors.white,
     fontWeight: '800',
-    fontSize: 13
+    fontSize: 12
   },
   postsList: {
-    paddingHorizontal: 18,
-    gap: 14
+    paddingHorizontal: 16,
+    gap: 12
   },
   postCard: {
-    backgroundColor: colors.card,
-    borderRadius: 14,
+    backgroundColor: '#121216',
+    borderRadius: 18,
     padding: 16,
     borderWidth: 1,
-    borderColor: colors.cardBorder
+    borderColor: 'rgba(255, 255, 255, 0.06)'
   },
   postHeader: {
     flexDirection: 'row',
@@ -582,9 +766,9 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   postAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     marginRight: 10,
     borderWidth: 1,
     borderColor: colors.cardBorder
@@ -618,12 +802,12 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   tagChip: {
-    backgroundColor: colors.tagBg,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
     paddingVertical: 3,
     paddingHorizontal: 8,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: colors.cardBorder
+    borderColor: 'rgba(255, 255, 255, 0.08)'
   },
   tagChipCrossCollege: {
     backgroundColor: colors.primaryMuted,
@@ -643,8 +827,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 14,
     paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: colors.cardBorder
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: 'rgba(255, 255, 255, 0.08)'
   },
   postAction: {
     flexDirection: 'row',

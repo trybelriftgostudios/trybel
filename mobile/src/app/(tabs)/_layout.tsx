@@ -1,7 +1,8 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet, Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../theme/colors';
 
@@ -19,18 +20,21 @@ export default function TabsLayout() {
         tabBarHideOnKeyboard: true,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
+        tabBarBackground: () =>
+          Platform.OS === 'ios' ? (
+            <BlurView tint="systemChromeMaterialDark" intensity={85} style={StyleSheet.absoluteFill} />
+          ) : (
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(8, 8, 10, 0.96)' }]} />
+          ),
         tabBarStyle: {
-          backgroundColor: colors.bg,
-          borderTopColor: colors.cardBorder,
-          borderTopWidth: 1,
+          position: 'absolute',
+          backgroundColor: Platform.OS === 'ios' ? 'transparent' : 'rgba(8, 8, 10, 0.96)',
+          borderTopColor: 'rgba(255, 255, 255, 0.08)',
+          borderTopWidth: StyleSheet.hairlineWidth,
           height: tabHeight,
           paddingBottom: bottomPadding,
           paddingTop: 6,
-          elevation: 16,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: -4 },
-          shadowOpacity: 0.5,
-          shadowRadius: 10
+          elevation: 16
         },
         tabBarItemStyle: {
           paddingVertical: 2
