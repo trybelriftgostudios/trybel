@@ -5,7 +5,8 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Image
+  Image,
+  Platform
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -23,6 +24,8 @@ export default function ProfileScreen() {
   const [isExporting, setIsExporting] = useState(false);
 
   const studentProfile = {
+    userId: 'usr_sritan_01',
+    username: 'varundulam', // Optional handle; defaults to userId if left empty
     fullName: 'Varun Dulam',
     email: 'varun.dulam@stpeters.edu.in',
     collegeName: "St. Peter's Engineering College",
@@ -35,6 +38,9 @@ export default function ProfileScreen() {
     interests: ['AI Research', 'Startups', 'Hackathons', 'Cloud Infrastructure'],
     availableFor: ['Study Partners', 'Hackathon Teams', 'Club Leadership']
   };
+
+  // If user doesn't specify a username, username defaults to userId
+  const effectiveUsername = studentProfile.username?.trim() || studentProfile.userId;
 
   const handleGeneratePdf = async () => {
     setIsExporting(true);
@@ -111,7 +117,11 @@ export default function ProfileScreen() {
             </View>
           </View>
 
-          <Text style={styles.fullName}>{studentProfile.fullName}</Text>
+          <Text style={styles.fullName}>{effectiveUsername}</Text>
+          <Text style={styles.handleSubtext}>
+            {studentProfile.fullName ? `${studentProfile.fullName} • ` : ''}
+            <Text style={styles.uidTag}>UID: {studentProfile.userId}</Text>
+          </Text>
           <Text style={styles.emailText}>{studentProfile.email}</Text>
           <Text style={styles.deptText}>
             {studentProfile.department} • {studentProfile.yearOfStudy} • {studentProfile.collegeName}
@@ -334,6 +344,16 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.textPrimary,
     letterSpacing: -0.3
+  },
+  handleSubtext: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginTop: 2
+  },
+  uidTag: {
+    fontSize: 10,
+    color: colors.textMuted,
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace'
   },
   emailText: {
     fontSize: 13,

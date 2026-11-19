@@ -17,6 +17,7 @@ export default function StudentVerifyScreen() {
   const { showFeedback } = useFeedback();
 
   const [collegeName] = useState("St. Peter's Engineering College (Hyderabad)");
+  const [username, setUsername] = useState('varundulam');
   const [rollNumber, setRollNumber] = useState('22SPCS089');
   const [eduEmail, setEduEmail] = useState('varun.dulam@stpetershyd.edu.in');
   const [department, setDepartment] = useState('Computer Science & Engineering');
@@ -73,6 +74,16 @@ export default function StudentVerifyScreen() {
         <View style={styles.disabledInputBox}>
           <Text style={styles.disabledInputText}>{collegeName}</Text>
         </View>
+
+        <Text style={styles.label}>Campus Username (Optional • defaults to UID if blank)</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="e.g. varundulam (leave blank to use UID)"
+          placeholderTextColor={colors.textMuted}
+          value={username}
+          onChangeText={setUsername}
+          autoCapitalize="none"
+        />
 
         <Text style={styles.label}>Student Roll Number / Registration ID *</Text>
         <TextInput

@@ -12,7 +12,8 @@ export interface College {
 }
 
 export interface User {
-  id: string;
+  id: string; // Internal immutable UID (e.g. usr_8f14a)
+  username?: string; // Optional unique handle; defaults to id if not specified
   college_id: string;
   email: string;
   role: UserRole;
@@ -21,9 +22,18 @@ export interface User {
   created_at: string;
 }
 
+/**
+ * Resolves the user's display name / handle.
+ * If the user did not specify a username, it falls back to their internal UID.
+ */
+export function getEffectiveUsername(entity: { id?: string; user_id?: string; username?: string }): string {
+  return entity.username?.trim() || entity.user_id || entity.id || 'anonymous';
+}
+
 export interface Profile {
   id: string;
   user_id: string;
+  username?: string; // Display handle, falls back to user_id
   college_id: string;
   full_name: string;
   avatar_url?: string;

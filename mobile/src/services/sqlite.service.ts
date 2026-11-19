@@ -154,7 +154,7 @@ class SQLiteService {
         {
           id: 'post_1',
           college_id: 'col_stpeters_01',
-          author_name: 'Varun Dulam',
+          author_name: '@varundulam',
           author_role: 'CSE • 3rd Year',
           avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200',
           content: 'Looking for 2 more team members for Smart India Hackathon (SIH 2025)! Open to cross-college collaborators.',
@@ -190,7 +190,7 @@ class SQLiteService {
           [
             'post_1',
             'col_stpeters_01',
-            'Varun Dulam',
+            '@varundulam',
             'CSE • 3rd Year',
             'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200',
             'Looking for 2 more team members for Smart India Hackathon (SIH 2025)! Open to cross-college collaborators.',

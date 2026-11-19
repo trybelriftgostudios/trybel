@@ -1,5 +1,10 @@
 // Client-side resilient fallback mock data for offline / web preview / mixed-content environments
 
+export function getEffectiveUsername(entity?: { id?: string; user_id?: string; username?: string; name?: string }): string {
+  if (!entity) return 'anonymous';
+  return entity.username?.trim() || entity.user_id || entity.id || entity.name || 'anonymous';
+}
+
 export const mockCollege = {
   id: 'col_stpeters_01',
   name: "St. Peter's Engineering College",
@@ -10,8 +15,9 @@ export const mockCollege = {
 
 export const mockUser = {
   id: 'usr_sritan_01',
+  username: 'varundulam', // optional handle; defaults to id if not set
   college_id: 'col_stpeters_01',
-  email: 'varun@pappu',
+  email: 'varun.dulam@stpetershyd.edu.in',
   role: 'student',
   is_verified: true,
   status: 'active',
@@ -21,7 +27,7 @@ export const mockUser = {
 export const mockProfile = {
   id: 'prof_sritan',
   user_id: 'usr_sritan_01',
-  college_id: 'col_stpeters_01',
+  username: 'varundulam', // defaults to user_id if unset
   full_name: 'Varun Dulam',
   avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300',
   department: 'CSE',

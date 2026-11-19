@@ -19,7 +19,8 @@ const PHOTO_SIZE = (SCREEN_WIDTH - 48) / 2;
 
 interface Friend {
   id: string;
-  name: string;
+  username?: string; // Optional handle; defaults to id
+  name?: string;
   department: string;
   avatar: string;
   isMutual: boolean;
@@ -39,21 +40,24 @@ export default function FriendsScreen() {
 
   const [friends, setFriends] = useState<Friend[]>([
     {
-      id: 'usr_sana',
+      id: 'usr_sana_04',
+      username: 'sana_khan',
       name: 'Sana Khan',
       department: 'CSE • 3rd Year',
       avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200',
       isMutual: true
     },
     {
-      id: 'usr_arjun',
+      id: 'usr_arjun_92',
+      // No username provided - falls back to userid 'usr_arjun_92' as display name
       name: 'Arjun Reddy',
       department: 'CSE • 3rd Year',
       avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200',
       isMutual: true
     },
     {
-      id: 'usr_venkatesh',
+      id: 'usr_venky_11',
+      username: 'venkatesh_ece',
       name: 'Venkatesh',
       department: 'ECE • 2nd Year',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
@@ -167,8 +171,8 @@ export default function FriendsScreen() {
                 <View style={styles.friendRow}>
                   <Image source={{ uri: f.avatar }} style={styles.friendAvatar} />
                   <View style={styles.friendInfo}>
-                    <Text style={styles.friendName}>{f.name}</Text>
-                    <Text style={styles.friendDept}>{f.department}</Text>
+                    <Text style={styles.friendName}>@{f.username || f.id}</Text>
+                    <Text style={styles.friendDept}>{f.name ? `${f.name} • ` : ''}{f.department}</Text>
                     <View style={styles.verifiedTag}>
                       <Text style={styles.verifiedTagText}>✓ Verified Peer</Text>
                     </View>
@@ -176,7 +180,7 @@ export default function FriendsScreen() {
 
                   <TouchableOpacity
                     style={styles.unfriendBtn}
-                    onPress={() => handleUnfriend(f.id, f.name)}
+                    onPress={() => handleUnfriend(f.id, f.name || f.username || f.id)}
                   >
                     <Text style={styles.unfriendBtnText}>Unfriend</Text>
                   </TouchableOpacity>
