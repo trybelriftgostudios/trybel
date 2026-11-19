@@ -13,7 +13,7 @@ export interface College {
 
 export interface User {
   id: string; // Internal immutable UID (e.g. usr_8f14a)
-  username?: string; // Optional unique handle; defaults to id if not specified
+  username?: string; // Optional Discord-style display name (can have spaces); defaults to id if unset
   college_id: string;
   email: string;
   role: UserRole;
@@ -23,7 +23,7 @@ export interface User {
 }
 
 /**
- * Resolves the user's display name / handle.
+ * Resolves the user's display name / handle (Discord-style, supports spaces).
  * If the user did not specify a username, it falls back to their internal UID.
  */
 export function getEffectiveUsername(entity: { id?: string; user_id?: string; username?: string }): string {
@@ -33,7 +33,7 @@ export function getEffectiveUsername(entity: { id?: string; user_id?: string; us
 export interface Profile {
   id: string;
   user_id: string;
-  username?: string; // Display handle, falls back to user_id
+  username?: string; // Discord-style display name (can have spaces), falls back to user_id
   college_id: string;
   full_name: string;
   avatar_url?: string;

@@ -171,8 +171,8 @@ export default function FriendsScreen() {
                 <View style={styles.friendRow}>
                   <Image source={{ uri: f.avatar }} style={styles.friendAvatar} />
                   <View style={styles.friendInfo}>
-                    <Text style={styles.friendName}>@{f.username || f.id}</Text>
-                    <Text style={styles.friendDept}>{f.name ? `${f.name} • ` : ''}{f.department}</Text>
+                    <Text style={styles.friendName}>{f.username || f.id}</Text>
+                    <Text style={styles.friendDept}>{f.department}</Text>
                     <View style={styles.verifiedTag}>
                       <Text style={styles.verifiedTagText}>✓ Verified Peer</Text>
                     </View>

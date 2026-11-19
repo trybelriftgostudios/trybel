@@ -49,7 +49,7 @@ export default function HomeScreen() {
       const newPost: OfflinePost = {
         id: `post_${Date.now()}`,
         college_id: 'col_stpeters_01',
-        author_name: '@varundulam',
+        author_name: 'Varun Dulam',
         author_role: 'CSE • 3rd Year',
         avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200',
         content: newPostText.trim(),

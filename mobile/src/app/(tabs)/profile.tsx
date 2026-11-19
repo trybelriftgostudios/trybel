@@ -25,7 +25,7 @@ export default function ProfileScreen() {
 
   const studentProfile = {
     userId: 'usr_sritan_01',
-    username: 'varundulam', // Optional handle; defaults to userId if left empty
+    username: 'Varun Dulam', // Discord-style display name (can have spaces, emojis, custom casing)
     fullName: 'Varun Dulam',
     email: 'varun.dulam@stpeters.edu.in',
     collegeName: "St. Peter's Engineering College",
@@ -39,7 +39,7 @@ export default function ProfileScreen() {
     availableFor: ['Study Partners', 'Hackathon Teams', 'Club Leadership']
   };
 
-  // If user doesn't specify a username, username defaults to userId
+  // Discord-style: if user doesn't specify username, it defaults to their internal UID
   const effectiveUsername = studentProfile.username?.trim() || studentProfile.userId;
 
   const handleGeneratePdf = async () => {

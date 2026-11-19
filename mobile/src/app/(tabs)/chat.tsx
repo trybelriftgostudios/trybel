@@ -34,14 +34,14 @@ export default function ChatScreen() {
   const [messages, setMessages] = useState<{ id: string; sender: string; text: string; time: string; isMe: boolean }[]>([
     {
       id: 'm1',
-      sender: '@sana_khan',
+      sender: 'Sana Khan',
       text: 'Working on the computer vision model pipeline for SIH now.',
       time: '10:08 AM',
       isMe: false
     },
     {
       id: 'm2',
-      sender: '@varundulam',
+      sender: 'Varun Dulam',
       text: 'Awesome, I updated the project prototype architecture on GitHub!',
       time: '10:14 AM',
       isMe: true
@@ -53,7 +53,7 @@ export default function ChatScreen() {
       id: 'th_1',
       title: 'Smart India Hackathon Squad',
       type: 'team',
-      lastMessage: '@varundulam: I updated the project prototype architecture on GitHub!',
+      lastMessage: 'Varun Dulam: I updated the project prototype architecture on GitHub!',
       time: '10:14 AM',
       unreadCount: 2,
       avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=120',
@@ -61,7 +61,7 @@ export default function ChatScreen() {
     },
     {
       id: 'th_2',
-      title: '@sana_khan',
+      title: 'Sana Khan',
       type: 'friend_dm',
       lastMessage: 'Sounds great! Let us meet at the library at 5 PM.',
       time: 'Yesterday',
@@ -73,7 +73,7 @@ export default function ChatScreen() {
       id: 'th_3',
       title: 'DBMS Revision Cohort',
       type: 'study_group',
-      lastMessage: '@usr_arjun_92: Shared the SQL indexing cheat sheet in notes.',
+      lastMessage: 'usr_arjun_92: Shared the SQL indexing cheat sheet in notes.',
       time: '2 days ago',
       unreadCount: 0,
       avatar: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=120',

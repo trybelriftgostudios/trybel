@@ -75,14 +75,14 @@ export default function StudentVerifyScreen() {
           <Text style={styles.disabledInputText}>{collegeName}</Text>
         </View>
 
-        <Text style={styles.label}>Campus Username (Optional • defaults to UID if blank)</Text>
+        <Text style={styles.label}>Display Username (Optional • Discord-style with spaces • defaults to UID)</Text>
         <TextInput
           style={styles.input}
-          placeholder="e.g. varundulam (leave blank to use UID)"
+          placeholder="e.g. Varun Dulam or Cyber Knight (leave blank to use UID)"
           placeholderTextColor={colors.textMuted}
           value={username}
           onChangeText={setUsername}
-          autoCapitalize="none"
+          autoCapitalize="words"
         />
 
         <Text style={styles.label}>Student Roll Number / Registration ID *</Text>
