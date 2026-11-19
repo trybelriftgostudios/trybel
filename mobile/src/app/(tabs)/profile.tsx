@@ -15,6 +15,8 @@ import { colors } from '../../theme/colors';
 import { useSecurity } from '../../context/SecurityContext';
 import { useFeedback } from '../../context/FeedbackContext';
 import { exportImportService } from '../../services/export-import.service';
+import { CampusTag, mockAvailableTags } from '../../services/mockFallback';
+import { UserProfileModal } from '../../components/UserProfileModal';
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -22,6 +24,12 @@ export default function ProfileScreen() {
   const { showFeedback } = useFeedback();
 
   const [isExporting, setIsExporting] = useState(false);
+  const [showRoleModal, setShowRoleModal] = useState(false);
+  const [userTags, setUserTags] = useState<CampusTag[]>([
+    mockAvailableTags[0], // CSE
+    mockAvailableTags[7], // GDSC Lead
+    mockAvailableTags[10] // SIH 2025 Finalist
+  ]);
 
   const studentProfile = {
     userId: 'usr_sritan_01',
@@ -127,6 +135,23 @@ export default function ProfileScreen() {
             {studentProfile.department} • {studentProfile.yearOfStudy} • {studentProfile.collegeName}
           </Text>
           <Text style={styles.mottoText}>“{studentProfile.motto}”</Text>
+
+          {/* Discord-Style Roles & Campus Tags */}
+          <View style={styles.discordRolesRow}>
+            {userTags.map(tag => (
+              <View key={tag.id} style={[styles.discordRolePill, { borderColor: tag.color }]}>
+                <View style={[styles.roleDot, { backgroundColor: tag.color }]} />
+                <Text style={[styles.rolePillText, { color: tag.color }]}>{tag.name}</Text>
+              </View>
+            ))}
+            <TouchableOpacity
+              style={styles.addRolePill}
+              onPress={() => setShowRoleModal(true)}
+            >
+              <Ionicons name="shield-checkmark-outline" size={12} color="#0A84FF" />
+              <Text style={styles.addRoleText}>Roles</Text>
+            </TouchableOpacity>
+          </View>
 
           {/* Quick Stats Grid */}
           <View style={styles.statsRow}>
@@ -249,6 +274,26 @@ export default function ProfileScreen() {
           </View>
         </View>
       </ScrollView>
+
+      {/* Discord-Style Tag & Role Management Modal */}
+      <UserProfileModal
+        visible={showRoleModal}
+        onClose={() => setShowRoleModal(false)}
+        user={{
+          id: studentProfile.userId,
+          username: effectiveUsername,
+          fullName: studentProfile.fullName,
+          collegeName: studentProfile.collegeName,
+          collegeId: 'col_stpeters_01',
+          department: studentProfile.department,
+          yearOfStudy: studentProfile.yearOfStudy,
+          about: studentProfile.about,
+          verified: studentProfile.verified,
+          tags: userTags
+        }}
+        viewerRole="campus_mod"
+        viewerCollegeId="col_stpeters_01"
+      />
     </SafeAreaView>
   );
 }
@@ -372,6 +417,48 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     color: colors.textSecondary,
     marginTop: 10
+  },
+  discordRolesRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    justifyContent: 'center',
+    marginTop: 12
+  },
+  discordRolePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 1
+  },
+  roleDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3
+  },
+  rolePillText: {
+    fontSize: 11,
+    fontWeight: '700'
+  },
+  addRolePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    backgroundColor: 'rgba(10, 132, 255, 0.15)',
+    borderWidth: 1,
+    borderColor: '#0A84FF'
+  },
+  addRoleText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#0A84FF'
   },
   statsRow: {
     flexDirection: 'row',

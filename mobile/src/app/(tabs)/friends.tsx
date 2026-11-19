@@ -13,6 +13,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../theme/colors';
 import { useFeedback } from '../../context/FeedbackContext';
 import { IOSSegmentedControl } from '../../components/IOSSegmentedControl';
+import { UserProfileModal, UserProfileData } from '../../components/UserProfileModal';
+import { CampusTag, mockAvailableTags } from '../../services/mockFallback';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const PHOTO_SIZE = (SCREEN_WIDTH - 48) / 2;
@@ -24,6 +26,7 @@ interface Friend {
   department: string;
   avatar: string;
   isMutual: boolean;
+  tags?: CampusTag[];
 }
 
 interface PhotoItem {
@@ -37,31 +40,35 @@ interface PhotoItem {
 export default function FriendsScreen() {
   const { showFeedback } = useFeedback();
   const [activeTab, setActiveTab] = useState<'friends' | 'requests' | 'photos'>('friends');
+  const [selectedProfile, setSelectedProfile] = useState<UserProfileData | null>(null);
 
   const [friends, setFriends] = useState<Friend[]>([
     {
       id: 'usr_sana_04',
-      username: 'sana_khan',
+      username: 'Sana Khan',
       name: 'Sana Khan',
       department: 'CSE • 3rd Year',
       avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200',
-      isMutual: true
+      isMutual: true,
+      tags: [mockAvailableTags[0], mockAvailableTags[7]] // CSE, GDSC Lead
     },
     {
       id: 'usr_arjun_92',
       // No username provided - falls back to userid 'usr_arjun_92' as display name
       name: 'Arjun Reddy',
-      department: 'CSE • 3rd Year',
+      department: 'CSM • 3rd Year',
       avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200',
-      isMutual: true
+      isMutual: true,
+      tags: [mockAvailableTags[1], mockAvailableTags[8]] // CSM (AI/ML), Robotics Core
     },
     {
       id: 'usr_venky_11',
-      username: 'venkatesh_ece',
+      username: 'Venkatesh Rao',
       name: 'Venkatesh',
       department: 'ECE • 2nd Year',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
-      isMutual: true
+      isMutual: true,
+      tags: [mockAvailableTags[4], mockAvailableTags[9]] // ECE, E-Cell Member
     }
   ]);
 
@@ -168,13 +175,32 @@ export default function FriendsScreen() {
           <View style={styles.groupedList}>
             {friends.map((f, idx) => (
               <React.Fragment key={f.id}>
-                <View style={styles.friendRow}>
+                <TouchableOpacity
+                  style={styles.friendRow}
+                  activeOpacity={0.7}
+                  onPress={() => setSelectedProfile({
+                    id: f.id,
+                    username: f.username,
+                    fullName: f.name,
+                    department: f.department,
+                    avatar: f.avatar,
+                    verified: true,
+                    tags: f.tags,
+                    collegeName: "St. Peter's Engineering College"
+                  })}
+                >
                   <Image source={{ uri: f.avatar }} style={styles.friendAvatar} />
                   <View style={styles.friendInfo}>
                     <Text style={styles.friendName}>{f.username || f.id}</Text>
                     <Text style={styles.friendDept}>{f.department}</Text>
-                    <View style={styles.verifiedTag}>
-                      <Text style={styles.verifiedTagText}>✓ Verified Peer</Text>
+                    {/* Discord Role Badges Mini Preview */}
+                    <View style={styles.miniTagRow}>
+                      {f.tags?.map(t => (
+                        <View key={t.id} style={[styles.miniTagPill, { borderColor: t.color }]}>
+                          <View style={[styles.miniTagDot, { backgroundColor: t.color }]} />
+                          <Text style={[styles.miniTagText, { color: t.color }]}>{t.name}</Text>
+                        </View>
+                      ))}
                     </View>
                   </View>
 
@@ -184,7 +210,7 @@ export default function FriendsScreen() {
                   >
                     <Text style={styles.unfriendBtnText}>Unfriend</Text>
                   </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
                 {idx < friends.length - 1 && <View style={styles.rowSeparator} />}
               </React.Fragment>
             ))}
@@ -262,6 +288,15 @@ export default function FriendsScreen() {
           </View>
         )}
       </ScrollView>
+
+      {/* User Discord Profile Modal with Tag Inspector & Mod Controls */}
+      <UserProfileModal
+        visible={!!selectedProfile}
+        onClose={() => setSelectedProfile(null)}
+        user={selectedProfile}
+        viewerRole="campus_mod"
+        viewerCollegeId="col_stpeters_01"
+      />
     </SafeAreaView>
   );
 }
@@ -354,6 +389,31 @@ const styles = StyleSheet.create({
   verifiedTagText: {
     color: colors.primary,
     fontSize: 9,
+    fontWeight: '700'
+  },
+  miniTagRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+    marginTop: 4
+  },
+  miniTagPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 1
+  },
+  miniTagDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5
+  },
+  miniTagText: {
+    fontSize: 10,
     fontWeight: '700'
   },
   unfriendBtn: {

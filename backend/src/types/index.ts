@@ -30,6 +30,16 @@ export function getEffectiveUsername(entity: { id?: string; user_id?: string; us
   return entity.username?.trim() || entity.user_id || entity.id || 'anonymous';
 }
 
+export interface CampusTag {
+  id: string;
+  name: string; // e.g. "CSE", "CSM", "CSD", "ECE", "GDSC Core Team", "Campus Mod"
+  color: string; // hex color e.g. "#3B82F6", "#10B981", "#8B5CF6"
+  category: 'department' | 'club' | 'role' | 'achievement';
+  scope: 'global' | 'college'; // global (super_mod/main_admin) vs college (campus_mod)
+  college_id?: string; // specific college when scope is 'college'
+  icon?: string;
+}
+
 export interface Profile {
   id: string;
   user_id: string;
@@ -38,6 +48,7 @@ export interface Profile {
   full_name: string;
   avatar_url?: string;
   department?: string;
+  tags?: CampusTag[]; // Discord-style profile tags & roles
   year_of_study?: string;
   about?: string;
   motto?: string;

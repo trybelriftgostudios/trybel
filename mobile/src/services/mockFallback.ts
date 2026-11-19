@@ -5,6 +5,37 @@ export function getEffectiveUsername(entity?: { id?: string; user_id?: string; u
   return entity.username?.trim() || entity.user_id || entity.id || entity.name || 'anonymous';
 }
 
+export interface CampusTag {
+  id: string;
+  name: string;
+  color: string;
+  category: 'department' | 'club' | 'role' | 'achievement';
+  scope: 'global' | 'college';
+  college_id?: string;
+  icon?: string;
+}
+
+export const mockAvailableTags: CampusTag[] = [
+  // Global Department Tags (Super Mod / Main Admin created)
+  { id: 'tag_dept_cse', name: 'CSE', color: '#0A84FF', category: 'department', scope: 'global', icon: 'code-slash' },
+  { id: 'tag_dept_csm', name: 'CSM (AI/ML)', color: '#BF5AF2', category: 'department', scope: 'global', icon: 'hardware-chip' },
+  { id: 'tag_dept_csd', name: 'CSD (Data Science)', color: '#5E5CE6', category: 'department', scope: 'global', icon: 'analytics' },
+  { id: 'tag_dept_csc', name: 'CSC (Cyber Security)', color: '#30B0C7', category: 'department', scope: 'global', icon: 'shield' },
+  { id: 'tag_dept_ece', name: 'ECE', color: '#FF9F0A', category: 'department', scope: 'global', icon: 'radio' },
+  { id: 'tag_dept_eee', name: 'EEE', color: '#FFD60A', category: 'department', scope: 'global', icon: 'flash' },
+  { id: 'tag_dept_it', name: 'IT', color: '#64D2FF', category: 'department', scope: 'global', icon: 'globe' },
+
+  // College-Specific Club Tags (Campus Mod created for SPEC)
+  { id: 'tag_club_gdsc', name: 'GDSC Lead', color: '#30D158', category: 'club', scope: 'college', college_id: 'col_stpeters_01', icon: 'sparkles' },
+  { id: 'tag_club_robotics', name: 'Robotics Core', color: '#FF453A', category: 'club', scope: 'college', college_id: 'col_stpeters_01', icon: 'construct' },
+  { id: 'tag_club_ecell', name: 'E-Cell Member', color: '#FFD700', category: 'club', scope: 'college', college_id: 'col_stpeters_01', icon: 'briefcase' },
+
+  // Global Roles & Achievements
+  { id: 'tag_role_sih', name: 'SIH 2025 Finalist', color: '#F59E0B', category: 'achievement', scope: 'global', icon: 'trophy' },
+  { id: 'tag_role_campus_mod', name: 'Campus Moderator', color: '#0284C7', category: 'role', scope: 'college', college_id: 'col_stpeters_01', icon: 'shield-checkmark' },
+  { id: 'tag_role_super_mod', name: 'Super Mod', color: '#7C3AED', category: 'role', scope: 'global', icon: 'star' }
+];
+
 export const mockCollege = {
   id: 'col_stpeters_01',
   name: "St. Peter's Engineering College",
@@ -15,7 +46,7 @@ export const mockCollege = {
 
 export const mockUser = {
   id: 'usr_sritan_01',
-  username: 'varundulam', // optional handle; defaults to id if not set
+  username: 'Varun Dulam', // Discord-style display name
   college_id: 'col_stpeters_01',
   email: 'varun.dulam@stpetershyd.edu.in',
   role: 'student',
@@ -27,11 +58,16 @@ export const mockUser = {
 export const mockProfile = {
   id: 'prof_sritan',
   user_id: 'usr_sritan_01',
-  username: 'varundulam', // defaults to user_id if unset
+  username: 'Varun Dulam',
   full_name: 'Varun Dulam',
   avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300',
   department: 'CSE',
   year_of_study: '3rd Year',
+  tags: [
+    mockAvailableTags[0], // CSE
+    mockAvailableTags[7], // GDSC Lead
+    mockAvailableTags[10] // SIH 2025 Finalist
+  ],
   about: 'Passionate about building products, exploring new technologies and collaborating with like-minded people.',
   motto: 'Learn • Build • Connect',
   skills: ['Python', 'Web Development', 'Machine Learning', 'UI/UX', 'Leadership'],

@@ -18,6 +18,8 @@ import { useFeedback } from '../../context/FeedbackContext';
 import { useSecurity } from '../../context/SecurityContext';
 import { PanCarousel } from '../../components/PanCarousel';
 import { IOSSegmentedControl } from '../../components/IOSSegmentedControl';
+import { UserProfileModal, UserProfileData } from '../../components/UserProfileModal';
+import { mockAvailableTags } from '../../services/mockFallback';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -25,6 +27,7 @@ export default function HomeScreen() {
   const { lockApp, hasPin } = useSecurity();
 
   const [posts, setPosts] = useState<OfflinePost[]>([]);
+  const [selectedAuthor, setSelectedAuthor] = useState<UserProfileData | null>(null);
   const [activeTab, setActiveTab] = useState<'for_you' | 'college' | 'following'>('for_you');
   const [newPostText, setNewPostText] = useState('');
   const [isPosting, setIsPosting] = useState(false);
@@ -261,14 +264,28 @@ export default function HomeScreen() {
 
             return (
               <View key={post.id} style={styles.postCard}>
-                <View style={styles.postHeader}>
+                <TouchableOpacity
+                  style={styles.postHeader}
+                  activeOpacity={0.7}
+                  onPress={() => setSelectedAuthor({
+                    id: post.id.replace('post_', 'usr_'),
+                    username: post.author_name,
+                    fullName: post.author_name,
+                    department: post.author_role,
+                    avatar: post.avatar_url,
+                    collegeName: "St. Peter's Engineering College",
+                    collegeId: post.college_id,
+                    verified: true,
+                    tags: [mockAvailableTags[0], mockAvailableTags[7]]
+                  })}
+                >
                   <Image source={{ uri: post.avatar_url }} style={styles.postAvatar} />
                   <View style={styles.postAuthorInfo}>
                     <Text style={styles.authorName}>{post.author_name}</Text>
                     <Text style={styles.authorRole}>{post.author_role}</Text>
                   </View>
                   <Text style={styles.postTime}>Just now</Text>
-                </View>
+                </TouchableOpacity>
 
                 <Text style={styles.postContent}>{post.content}</Text>
 
@@ -325,6 +342,15 @@ export default function HomeScreen() {
           })}
         </View>
       </ScrollView>
+
+      {/* User Discord Profile Modal with Roles & Mod Controls */}
+      <UserProfileModal
+        visible={!!selectedAuthor}
+        onClose={() => setSelectedAuthor(null)}
+        user={selectedAuthor}
+        viewerRole="campus_mod"
+        viewerCollegeId="col_stpeters_01"
+      />
     </SafeAreaView>
   );
 }
